@@ -1,0 +1,35 @@
+{
+ "_note": "Per-patient incremental acquisition cost vector for B1. Every number is either quoted from a source or derived from quoted numbers by the formula given. Retrieved 2026-10-09. Clinicopathologic data (incl. pathologic stage) and the H&E glass slide itself are standard of care after resection and carry zero incremental cost.",
+ "slides_per_patient": {
+  "value": 3.46,
+  "derivation": "4,532 WSI feature files / 1,310 patients with WSI in the analysis cohort (experiments/lung_missingness/prepared/summary.json)"
+ },
+ "wsi_usd_per_slide": {
+  "scanner_ownership": {"low": 0.55, "high": 19.53, "source": "ardon2023", "quote": "cost per scan was calculated to be between $0.55 and $19.53"},
+  "scan_staff": {"low": 0.79, "high": 0.92, "source": "ardon2023", "quote": "staffing ... contributes $0.79-0.92 to the cost per slide scanned"},
+  "storage": {"value": 2.0, "source": "ardon2023", "derivation": "2 GB per single-z-plane WSI x $1M per PB on-premise storage including redundancy"},
+  "total": {"low": 3.34, "high": 22.45}
+ },
+ "wsi_usd_per_patient": {"low": 11.56, "high": 77.68, "derivation": "total per slide x 3.46 slides"},
+ "rna_usd_per_patient": {
+  "low": {"value": 300, "source": "altburger2026", "derivation": "WTS consumables EUR 278 per case (consumables only; excludes personnel, equipment, data) converted at an assumed 1.08 USD/EUR; a lower bound"},
+  "high": {"value": 2919, "source": "ortendahl2025", "derivation": "WES/WTS test cost input (US list price, includes the exome component); an upper bound"},
+  "context": {"source": "cuppen2022", "quote": "Microcosting estimates from four studies range between $9,309 USD and $1,914 USD (WGTS)"}
+ },
+ "turnaround": {
+  "wsi": {"value": "about 1 min scanning per slide; same working day", "source": "vafaeisadr2024", "quote": "mean scan time of 1 min per slide (modelling assumption)"},
+  "rna": {"value_working_days": [10, 14], "source": "cuppen2022", "quote": "turnaround time for WGTS ... < 10-14 working days"}
+ },
+ "carbon_kgco2e": {
+  "wsi_per_slide": {"low": 0.073, "high": 0.101, "source": "tilmant2026", "derivation": "2,116-2,923 t CO2eq for 1 year of storage of 28,932,624 slides (France, nuclear-dominated grid); storage-dominated, per slide-year"},
+  "wsi_scanning_energy_kwh_per_slide": {"value": 0.0097, "source": "vafaeisadr2024", "derivation": "580 W scanner x 1 min"},
+  "wsi_per_patient": {"low": 0.25, "high": 0.35},
+  "rna_per_patient_compute_only": {"low": 0.05, "high": 5.0, "source": "grealey2022", "derivation": "0.001-0.1 kgCO2e per million reads for alignment x 50 M reads; wet-lab reagents, instruments and shipping NOT included"},
+  "rna_wetlab": {"value": null, "note": "No peer-reviewed per-sample life-cycle assessment of clinical RNA-seq identified; reported as a gap"}
+ },
+ "cost_scenarios_usd": {
+  "low_ratio": {"wsi": 77.68, "rna": 300, "kappa": 3.9},
+  "high_ratio": {"wsi": 11.56, "rna": 2919, "kappa": 252.5},
+  "central": {"wsi": 44.62, "rna": 1609.5, "derivation": "midpoints of the WSI and RNA ranges; kappa = 36.1"}
+ }
+}

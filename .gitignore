@@ -1,0 +1,29 @@
+# data and derived patient-level artifacts never enter this repo
+data/
+**/prepared/
+**/built/
+**/runs/
+**/anchored/
+*.npz
+*.parquet
+*.h5
+*.pt
+*.pkl
+salts.json
+registry.jsonl
+cohort.csv
+clinical.csv
+__pycache__/
+*.pyc
+.venv/
+# LaTeX build files
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+!experiments/**/run.log
+!experiments/**/recheck.log
+*.out
+*.synctex.gz

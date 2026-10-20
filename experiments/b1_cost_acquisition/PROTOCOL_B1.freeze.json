@@ -1,0 +1,11 @@
+{
+ "protocol": "PROTOCOL_B1.md",
+ "protocol_sha256": "ad1acf74a882dcc0fa1115402c76ea66e6773f66933214f0f9487cf13da422b1",
+ "frozen_at_utc": "2026-10-08T14:07:44.268044+00:00",
+ "state": "No B1 code written or run. H1 static results (full fusion vs clinical, versions A/B/C) known; acquisition policies never run.",
+ "inputs": {
+  "cohort.csv": "dc112324c435f9691147d22f754704e3c6788a383d9abb93d22519c68693b3e4",
+  "features.npz": "b5b8c588cffc8e962f692e04e6c0cce099458aff278e831eda579a3819345baf",
+  "summary.json": "adb3a1cbaa7fb50e4f48f65eab1d2a854bf25dcc8963c4e0c47fac1e56a60e70"
+ }
+}

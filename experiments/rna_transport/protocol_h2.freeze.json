@@ -1,0 +1,29 @@
+{
+  "protocol": "PROTOCOL_H2.md",
+  "protocol_sha256": "01049de61b3db9e41eaf4098355da18188cf9f20f98f92054c56d0263e92da5f",
+  "frozen_at_utc": "2026-10-06T09:38:01.381275+00:00",
+  "data_state": "GEO: sample annotations only (event totals + field formats). No expression downloaded; no outcome-covariate or outcome-expression analysis. Dev cohort previously used internally.",
+  "files_touched_before_freeze": {
+    "discovery\\geo\\GSE30219_samples.csv": "41c036ecd1be8aea4450a14f1f13ada9dc810d32f3135a561a401c048fa5df30",
+    "discovery\\geo\\GSE31210_samples.csv": "ddb0eef4f8706477c7a39b6f6ae4e3369dd2e858e8bddaa29ef1760d40129de1",
+    "discovery\\geo\\GSE37745_samples.csv": "64bdc9d10575ee885cd52a71587d99df34f18a1baf5be2620dd577f548dbe43e",
+    "discovery\\geo\\GSE41271_samples.csv": "93366153c1ad9ecf0c9003293f3f0224d7651756bb08445c25965f5f57abd6bc",
+    "discovery\\geo\\GSE42127_samples.csv": "dcc8fc77d4729f6fe531df86a0f36dd43b74b4eca170abda1df7b7f17480d748",
+    "discovery\\geo\\GSE50081_samples.csv": "e7fd811d955e74902c5d44f7b912cbcc31593a12ba9b1e26e2bb44f2f8e06d6d",
+    "discovery\\geo\\GSE68465_samples.csv": "3209361f70baa440bc4a660790f2696bc2d6074ca2267bb243d29fb575d6f873",
+    "discovery\\geo\\GSE72094_samples.csv": "89c616bd7ab7789022548153e9aef4e32c0b18313986801406f8a4a837b9f14c",
+    "discovery\\geo\\geo_lung_os_screen.csv": "1d172143015805473cc7bb2bcad8268aa1d249652bebab1b3116e924a00c0282",
+    "discovery\\geo\\gdc_dev_rna_files.csv": "5934d32c5d76a86a1b8c646173bcf16c0f6c0349c9fa96631666665986d99553"
+  },
+  "dev_cohort_file": {
+    "experiments/lung_missingness/prepared/cohort.csv": "dc112324c435f9691147d22f754704e3c6788a383d9abb93d22519c68693b3e4"
+  },
+  "environment": {
+    "python": "3.12.9",
+    "platform": "Windows-10-10.0.19045-SP0",
+    "numpy": "2.3.4",
+    "pandas": "2.3.3",
+    "scikit-learn": "1.9.1",
+    "scikit-survival": "0.28.0"
+  }
+}

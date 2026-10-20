@@ -1,0 +1,2008 @@
+# Medical Multimodal Data Lake — dataset registry (hand-curated source of truth)
+#
+# `python -m medlake registry build` validates this file and writes
+# registry/datasets.db (SQLite) + registry/datasets.parquet.
+#
+# id_namespace: 病人 ID 的"发放机构"。同一 namespace 下的 ID 才可以跨数据集 join
+#   (例如 MIMIC-IV / MIMIC-CXR / MIMIC-IV-ED 共用 "MIMIC"；TCIA 影像与 GDC 临床共用 "TCGA")。
+#   不同 namespace 下数字相同的 ID 绝不是同一个人。
+#
+# access_level: open | registration | credentialed_dua | application | controlled
+# download_method: idc | gdc | openneuro | physionet | aimi | loni | synapse | kaggle | isic_api | http | manual
+# verified: 最近一次人工/程序核对 size、license、访问方式的日期；null = 尚未核对，数字来自论文/二手资料
+
+datasets:
+
+  # ------------------------------------------------------------------ MIMIC family
+  - dataset_id: mimic-iv
+    dataset_name: MIMIC-IV
+    version: "3.1"
+    canonical_url: https://physionet.org/content/mimiciv/
+    paper_doi: 10.1038/s41597-022-01899-x
+    id_namespace: MIMIC
+    domain: critical care / hospital EHR
+    body_part: [whole_body]
+    modality: [EHR]
+    image_format: []
+    has: [diagnosis, ehr, lab, medication]
+    diagnosis_system: [ICD9, ICD10]
+    access_level: credentialed_dua
+    license: PhysioNet Credentialed Health Data License 1.5.0
+    download_method: physionet
+    download_params: {slug: mimiciv, version: "3.1", mode: files}
+    priority: 1
+    notes: hosp/ + icu/ modules. subject_id links to MIMIC-CXR PatientID and MIMIC-IV-ED.
+    verified: null
+
+  - dataset_id: mimic-cxr
+    dataset_name: MIMIC-CXR (DICOM)
+    version: "2.1.0"
+    canonical_url: https://physionet.org/content/mimic-cxr/
+    paper_doi: 10.1038/s41597-019-0322-0
+    id_namespace: MIMIC
+    domain: radiology
+    body_part: [chest]
+    modality: [XR, report]
+    image_format: [DICOM]
+    num_patients: 65379
+    num_studies: 227835
+    num_images: 377110
+    size_bytes: 5.13e12
+    has: [report]
+    diagnosis_system: [free_text]
+    access_level: credentialed_dua
+    license: PhysioNet Credentialed Health Data License 1.5.0
+    download_method: physionet
+    download_params: {slug: mimic-cxr, version: "2.1.0", mode: files}
+    priority: 1
+    notes: 5.13 TB DICOM (PhysioNet API, 2026-09-30). Consider mimic-cxr-jpg (612 GB) first. Reports are in mimic-cxr (files/ *.txt).
+    verified: null
+
+  - dataset_id: mimic-cxr-jpg
+    dataset_name: MIMIC-CXR-JPG
+    version: "2.1.0"
+    canonical_url: https://physionet.org/content/mimic-cxr-jpg/
+    id_namespace: MIMIC
+    domain: radiology
+    body_part: [chest]
+    modality: [XR]
+    image_format: [JPEG]
+    num_images: 377110
+    size_bytes: 6.124e11
+    has: [diagnosis]
+    diagnosis_system: [CheXpert_labels, NegBio_labels]
+    access_level: credentialed_dua
+    license: PhysioNet Credentialed Health Data License 1.5.0
+    download_method: physionet
+    download_params: {slug: mimic-cxr-jpg, version: "2.1.0", mode: files}
+    priority: 1
+    verified: null
+
+  - dataset_id: mimic-iv-note
+    dataset_name: MIMIC-IV-Note
+    version: "2.2"
+    canonical_url: https://physionet.org/content/mimic-iv-note/
+    id_namespace: MIMIC
+    domain: clinical text
+    modality: [note, report]
+    has: [report]
+    diagnosis_system: [free_text]
+    access_level: credentialed_dua
+    license: PhysioNet Credentialed Health Data License 1.5.0
+    download_method: physionet
+    download_params: {slug: mimic-iv-note, version: "2.2", mode: files}
+    priority: 1
+    notes: discharge summaries + radiology reports.
+    verified: null
+
+  - dataset_id: mimic-iv-ed
+    dataset_name: MIMIC-IV-ED
+    version: "2.2"
+    canonical_url: https://physionet.org/content/mimic-iv-ed/
+    id_namespace: MIMIC
+    domain: emergency department
+    modality: [EHR]
+    has: [diagnosis, ehr, medication, vitals]
+    diagnosis_system: [ICD9, ICD10]
+    access_level: credentialed_dua
+    license: PhysioNet Credentialed Health Data License 1.5.0
+    download_method: physionet
+    download_params: {slug: mimic-iv-ed, version: "2.2", mode: files}
+    priority: 1
+    verified: null
+
+  # ------------------------------------------------------------------ Chest X-ray
+  - dataset_id: chexpert-plus
+    dataset_name: CheXpert Plus
+    canonical_url: https://aimi.stanford.edu/datasets/chexpert-plus
+    paper_doi: 10.48550/arXiv.2405.19538
+    id_namespace: CHEXPERT
+    domain: radiology
+    body_part: [chest]
+    modality: [XR, report]
+    image_format: [DICOM, PNG]
+    num_patients: 64725
+    num_studies: 187711
+    num_images: 223462
+    has: [diagnosis, report]
+    diagnosis_system: [CheXpert_labels, free_text]
+    access_level: registration
+    license: Stanford University Dataset Research Use Agreement
+    download_method: aimi
+    priority: 1
+    notes: Patient IDs overlap with original CheXpert (same namespace).
+    verified: null
+
+  - dataset_id: chexpert
+    dataset_name: CheXpert
+    version: "1.0"
+    canonical_url: https://aimi.stanford.edu/datasets/chexpert-chest-x-rays
+    paper_doi: 10.1609/aaai.v33i01.3301590
+    id_namespace: CHEXPERT
+    domain: radiology
+    body_part: [chest]
+    modality: [XR]
+    image_format: [JPEG]
+    num_patients: 65240
+    num_images: 224316
+    has: [diagnosis]
+    diagnosis_system: [CheXpert_labels]
+    access_level: registration
+    license: Stanford University Dataset Research Use Agreement
+    download_method: aimi
+    priority: 2
+    verified: null
+
+  - dataset_id: padchest
+    dataset_name: PadChest
+    canonical_url: https://bimcv.cipf.es/bimcv-projects/padchest/
+    paper_doi: 10.1016/j.media.2020.101797
+    id_namespace: PADCHEST
+    domain: radiology
+    body_part: [chest]
+    modality: [XR, report]
+    image_format: [PNG]
+    num_patients: 67000
+    num_images: 160000
+    size_bytes: 1.0e12
+    has: [diagnosis, report]
+    diagnosis_system: [UMLS]
+    access_level: registration
+    license: see BIMCV terms (verify)
+    download_method: manual
+    priority: 2
+    notes: Reports in Spanish. Labels = findings + differential diagnoses + anatomical locations mapped to UMLS.
+    verified: null
+
+  - dataset_id: vindr-cxr
+    size_bytes: 2.06e11
+    dataset_name: VinDr-CXR
+    version: "1.0.0"
+    canonical_url: https://physionet.org/content/vindr-cxr/
+    paper_doi: 10.1038/s41597-022-01498-w
+    id_namespace: VINDR
+    domain: radiology
+    body_part: [chest]
+    modality: [XR]
+    image_format: [DICOM]
+    num_images: 18000
+    has: [diagnosis, bbox]
+    access_level: credentialed_dua
+    license: PhysioNet Credentialed Health Data License 1.5.0
+    download_method: physionet
+    download_params: {slug: vindr-cxr, version: "1.0.0", mode: files}
+    priority: 2
+    verified: null
+
+  - dataset_id: rsna-pneumonia
+    dataset_name: RSNA Pneumonia Detection Challenge
+    canonical_url: https://www.kaggle.com/c/rsna-pneumonia-detection-challenge
+    id_namespace: RSNA_PNEUMONIA
+    domain: radiology
+    body_part: [chest]
+    modality: [XR]
+    image_format: [DICOM]
+    has: [diagnosis, bbox]
+    access_level: registration
+    license: Kaggle competition rules
+    download_method: kaggle
+    priority: 3
+    notes: Images derived from NIH ChestX-ray14 — deduplicate against it.
+    verified: null
+
+  # ------------------------------------------------------------------ Oncology: TCIA (via IDC) + GDC
+  - dataset_id: lidc-idri
+    dataset_name: LIDC-IDRI
+    canonical_url: https://www.cancerimagingarchive.net/collection/lidc-idri/
+    paper_doi: 10.1118/1.3528204
+    id_namespace: LIDC
+    domain: oncology / lung nodule
+    body_part: [chest]
+    modality: [CT, XR, SEG, SR]
+    image_format: [DICOM]
+    num_patients: 1010
+    size_bytes: 1.431e11
+    has: [diagnosis, segmentation]
+    diagnosis_system: [free_text]
+    access_level: open
+    license: CC BY 3.0
+    download_method: idc
+    download_params: {collection_id: lidc_idri}
+    priority: 1
+    notes: >
+      First end-to-end ingestion test. IDC v24: CT 125.4 GB, DX 3.9, CR 0.7, SEG 2.2, SR 1.1.
+      Original XML annotations + tcia-diagnosis-data-2012-04-20.xls are on the TCIA collection page (manual).
+    verified: 2026-09-30
+
+  - dataset_id: tcga-luad
+    dataset_name: TCGA-LUAD
+    canonical_url: https://www.cancerimagingarchive.net/collection/tcga-luad/
+    id_namespace: TCGA
+    domain: oncology / lung adenocarcinoma
+    body_part: [chest]
+    modality: [CT, PT, NM, SM, SEG, ANN, clinical, genomics]
+    image_format: [DICOM]
+    num_patients: 560
+    has: [diagnosis, ehr, pathology, genomics, segmentation]
+    diagnosis_system: [ICD-O-3]
+    access_level: open
+    license: CC BY 3.0 / CC BY 4.0 (per series); GDC open-access tier
+    download_method: idc
+    download_params: {collection_id: tcga_luad, gdc_project: TCGA-LUAD, default_modalities: [CT, PT]}
+    priority: 1
+    notes: >
+      IDC v24 total ~1.25 TB — dominated by SM (pathology WSI, 631 GB) and AI-derived SEG/ANN (600 GB).
+      Radiology only: CT 18.7 GB + PT 0.5 GB. Always filter by modality.
+      Clinical/diagnosis from GDC (same TCGA-XX-XXXX barcode).
+    verified: 2026-09-30
+
+  - dataset_id: cptac-ccrcc
+    dataset_name: CPTAC-CCRCC
+    canonical_url: https://www.cancerimagingarchive.net/collection/cptac-ccrcc/
+    id_namespace: CPTAC
+    domain: oncology / clear cell renal cell carcinoma
+    body_part: [kidney, abdomen]
+    modality: [CT, MR, SM, SEG, RTSTRUCT, clinical, genomics, proteomics]
+    image_format: [DICOM]
+    num_patients: 233
+    has: [diagnosis, ehr, pathology, genomics, proteomics, segmentation]
+    access_level: open
+    license: CC BY 4.0
+    download_method: idc
+    download_params: {collection_id: cptac_ccrcc, gdc_project: CPTAC-3, default_modalities: [CT, MR, SEG, RTSTRUCT]}
+    priority: 1
+    notes: IDC v24 — CT 52.2 GB, MR 7.8 GB, SM 210 GB. Proteomics at PDC.
+    verified: 2026-09-30
+
+  - dataset_id: cptac-luad
+    dataset_name: CPTAC-LUAD
+    canonical_url: https://www.cancerimagingarchive.net/collection/cptac-luad/
+    id_namespace: CPTAC
+    domain: oncology / lung adenocarcinoma
+    body_part: [chest]
+    modality: [CT, MR, PT, SM, clinical, genomics, proteomics]
+    image_format: [DICOM]
+    num_patients: 244
+    has: [diagnosis, ehr, pathology, genomics, proteomics]
+    access_level: open
+    license: CC BY 4.0
+    download_method: idc
+    download_params: {collection_id: cptac_luad, gdc_project: CPTAC-3, default_modalities: [CT, MR, PT]}
+    priority: 2
+    notes: IDC v24 — CT 38.0 GB, SM 470.6 GB.
+    verified: 2026-09-30
+
+  - dataset_id: msd
+    dataset_name: Medical Segmentation Decathlon
+    canonical_url: http://medicaldecathlon.com/
+    paper_doi: 10.1038/s41467-022-30695-9
+    id_namespace: MSD
+    domain: segmentation benchmark
+    modality: [CT, MR]
+    image_format: [NIfTI]
+    has: [segmentation]
+    access_level: open
+    license: CC BY-SA 4.0
+    download_method: http
+    priority: 3
+    notes: Several MSD tasks are re-hosted TCIA/LiTS data — dedupe by source.
+    verified: null
+
+  # ------------------------------------------------------------------ Neuro
+  - dataset_id: adni
+    dataset_name: ADNI
+    canonical_url: https://adni.loni.usc.edu/
+    id_namespace: ADNI
+    domain: neurology / Alzheimer's disease
+    body_part: [brain]
+    modality: [MR, PT, clinical, genomics]
+    image_format: [DICOM, NIfTI]
+    has: [diagnosis, ehr, lab, genomics]
+    diagnosis_system: [ADNI_DX]
+    access_level: application
+    license: ADNI Data Use Agreement
+    download_method: loni
+    priority: 1
+    notes: Longitudinal; cognitive scales, CSF/plasma biomarkers, APOE. Download via LONI IDA after approval.
+    verified: null
+
+  - dataset_id: brats
+    dataset_name: BraTS (2021+ adult glioma)
+    canonical_url: https://www.synapse.org/brats
+    id_namespace: BRATS
+    domain: neuro-oncology
+    body_part: [brain]
+    modality: [MR, SEG]
+    image_format: [NIfTI]
+    has: [segmentation, diagnosis]
+    access_level: registration
+    license: Synapse challenge terms (per year)
+    download_method: synapse
+    priority: 2
+    notes: Overlaps TCGA-GBM/LGG (TCIA). Record per-year edition as separate version.
+    verified: null
+
+  - dataset_id: fastmri
+    dataset_name: fastMRI
+    canonical_url: https://fastmri.med.nyu.edu/
+    paper_doi: 10.48550/arXiv.1811.08839
+    id_namespace: FASTMRI
+    domain: MRI reconstruction
+    body_part: [knee, brain, prostate, breast]
+    modality: [MR, kspace]
+    image_format: [HDF5, DICOM]
+    has: []
+    access_level: application
+    license: fastMRI Dataset Sharing Agreement (no redistribution)
+    download_method: manual
+    priority: 3
+    verified: null
+
+  - dataset_id: openneuro
+    dataset_name: OpenNeuro (catalog)
+    canonical_url: https://openneuro.org/
+    id_namespace: OPENNEURO   # real namespace is per accession: OPENNEURO:ds000001
+    domain: neuroimaging
+    body_part: [brain]
+    modality: [MR, PT, EEG, MEG, iEEG]
+    image_format: [NIfTI, BIDS]
+    has: [phenotype]
+    access_level: open
+    license: CC0 (most datasets; verify per accession)
+    download_method: openneuro
+    priority: 2
+    notes: Umbrella entry. Each ds###### accession is added as its own dataset when pulled.
+    verified: null
+
+  # ------------------------------------------------------------------ Dermatology
+  - dataset_id: isic
+    dataset_name: ISIC Archive
+    canonical_url: https://www.isic-archive.com/
+    id_namespace: ISIC
+    domain: dermatology
+    body_part: [skin]
+    modality: [dermoscopy]
+    image_format: [JPEG]
+    num_images: 500000
+    has: [diagnosis]
+    access_level: open
+    license: per-image (CC0 / CC-BY / CC-BY-NC)
+    download_method: isic_api
+    priority: 2
+    notes: MUST store license at image level.
+    verified: null
+
+  # ------------------------------------------------------------------ MIMIC family: OPEN members (added 2026-09-30 from PhysioNet API)
+  - dataset_id: mimic-iv-ecg
+    dataset_name: MIMIC-IV-ECG (Diagnostic ECG Matched Subset)
+    version: "1.0"
+    canonical_url: https://physionet.org/content/mimic-iv-ecg/1.0/
+    paper_doi: 10.13026/b95v-ff39
+    id_namespace: MIMIC
+    domain: cardiology
+    modality: [ECG, report]
+    image_format: [WFDB]
+    size_bytes: 9.70e10
+    has: [report]
+    diagnosis_system: [free_text]
+    access_level: open
+    license: ODbL 1.0
+    download_method: physionet
+    download_params: {slug: mimic-iv-ecg, version: "1.0", mode: zip}
+    priority: 1
+    notes: ~800k 12-lead ECGs, ~160k patients, machine reports. subject_id = MIMIC-IV subject_id -> joins EHR/CXR. Zip 33.8 GB.
+    verified: 2026-09-30
+
+  - dataset_id: mimic-iv-demo
+    dataset_name: MIMIC-IV Clinical Database Demo
+    version: "2.2"
+    canonical_url: https://physionet.org/content/mimic-iv-demo/2.2/
+    id_namespace: MIMIC
+    domain: hospital EHR (100-patient demo)
+    modality: [EHR]
+    has: [diagnosis, ehr, lab, medication]
+    diagnosis_system: [ICD9, ICD10]
+    access_level: open
+    license: ODbL 1.0
+    download_method: physionet
+    download_params: {slug: mimic-iv-demo, version: "2.2", mode: zip}
+    priority: 1
+    notes: Same schema as full MIMIC-IV — build the EHR ingestion on this while credentialing is pending.
+    verified: 2026-09-30
+
+  - dataset_id: mimic-iv-ed-demo
+    dataset_name: MIMIC-IV-ED Demo
+    version: "2.2"
+    canonical_url: https://physionet.org/content/mimic-iv-ed-demo/2.2/
+    id_namespace: MIMIC
+    domain: emergency department (demo)
+    modality: [EHR]
+    has: [diagnosis, ehr, medication, vitals]
+    diagnosis_system: [ICD9, ICD10]
+    access_level: open
+    license: ODbL 1.0
+    download_method: physionet
+    download_params: {slug: mimic-iv-ed-demo, version: "2.2", mode: files}
+    priority: 1
+    verified: 2026-09-30
+
+  - dataset_id: mimic-iv-ecg-demo
+    dataset_name: MIMIC-IV-ECG Demo
+    version: "0.1"
+    canonical_url: https://physionet.org/content/mimic-iv-ecg-demo/0.1/
+    id_namespace: MIMIC
+    domain: cardiology (demo)
+    modality: [ECG]
+    image_format: [WFDB]
+    has: [report]
+    access_level: open
+    license: ODbL 1.0
+    download_method: physionet
+    download_params: {slug: mimic-iv-ecg-demo, version: "0.1", mode: zip}
+    priority: 2
+    notes: 659 ECGs of 92 patients — overlaps the mimic-iv-demo patients.
+    verified: 2026-09-30
+
+  - dataset_id: mimic-iv-demo-omop
+    dataset_name: MIMIC-IV Demo in OMOP CDM
+    version: "0.9"
+    canonical_url: https://physionet.org/content/mimic-iv-demo-omop/0.9/
+    id_namespace: MIMIC
+    domain: hospital EHR (OMOP reference)
+    modality: [EHR]
+    has: [diagnosis, ehr, lab, medication]
+    diagnosis_system: [SNOMED, ICD10]
+    access_level: open
+    license: ODbL 1.0
+    download_method: physionet
+    download_params: {slug: mimic-iv-demo-omop, version: "0.9", mode: zip}
+    priority: 2
+    notes: Reference for the planned OMOP layer.
+    verified: 2026-09-30
+
+  - dataset_id: mimic4wdb
+    dataset_name: MIMIC-IV Waveform Database (v0.1.0)
+    version: "0.1.0"
+    canonical_url: https://physionet.org/content/mimic4wdb/0.1.0/
+    id_namespace: MIMIC
+    domain: ICU bedside waveforms
+    modality: [waveform]
+    image_format: [WFDB]
+    size_bytes: 1.37e10
+    has: [vitals]
+    access_level: open
+    license: ODbL 1.0
+    download_method: physionet
+    download_params: {slug: mimic4wdb, version: "0.1.0", mode: files}
+    priority: 3
+    verified: 2026-09-30
+
+  - dataset_id: chexmask
+    dataset_name: CheXmask (anatomical segmentation masks)
+    version: "1.0.0"
+    canonical_url: https://physionet.org/content/chexmask-cxr-segmentation-data/1.0.0/
+    paper_doi: 10.1038/s41597-024-03358-1
+    id_namespace: MULTI
+    domain: radiology
+    body_part: [chest]
+    modality: [SEG]
+    image_format: [CSV_RLE]
+    size_bytes: 4.01e10
+    has: [segmentation]
+    access_level: open
+    license: CC BY 4.0
+    download_method: physionet
+    download_params: {slug: chexmask-cxr-segmentation-data, version: "1.0.0", mode: zip}
+    priority: 2
+    notes: 657,566 CXRs with lung/heart masks across MIMIC/CheXpert/PadChest/VinDr/ChestX-ray14 — masks are open even where images are gated; rows carry each source dataset's own image IDs.
+    verified: 2026-09-30
+
+  - dataset_id: rexerr-v1
+    dataset_name: ReXErr-v1 (synthetic report errors on MIMIC-CXR)
+    version: "1.0.0"
+    canonical_url: https://physionet.org/content/rexerr-v1/1.0.0/
+    id_namespace: MIMIC
+    domain: radiology report QA
+    modality: [report]
+    has: [report]
+    access_level: open
+    license: ODC-By 1.0
+    download_method: physionet
+    download_params: {slug: rexerr-v1, version: "1.0.0", mode: zip}
+    priority: 3
+    verified: 2026-09-30
+
+  # ------------------------------------------------------------------ MIMIC family: credentialed derivatives (same PhysioNet credential covers them)
+  - dataset_id: mimic-iv-echo
+    dataset_name: MIMIC-IV-ECHO
+    version: "1.0.1"
+    canonical_url: https://physionet.org/content/mimic-iv-echo/1.0.1/
+    id_namespace: MIMIC
+    domain: cardiology imaging
+    modality: [US]
+    image_format: [DICOM]
+    size_bytes: 1.89e12
+    has: [report]
+    access_level: credentialed_dua
+    license: PhysioNet Credentialed Health Data License 1.5.0
+    download_method: physionet
+    download_params: {slug: mimic-iv-echo, version: "1.0.1", mode: files}
+    priority: 2
+    notes: 1.9 TB echo DICOM; links to MIMIC-IV + MIMIC-IV-Note echo reports.
+    verified: 2026-09-30
+
+  - dataset_id: chest-imagenome
+    dataset_name: Chest ImaGenome
+    version: "1.0.0"
+    canonical_url: https://physionet.org/content/chest-imagenome/1.0.0/
+    id_namespace: MIMIC
+    domain: radiology (scene graphs on MIMIC-CXR)
+    modality: [annotation]
+    has: [bbox, diagnosis]
+    access_level: credentialed_dua
+    license: PhysioNet Credentialed Health Data License 1.5.0
+    download_method: physionet
+    download_params: {slug: chest-imagenome, version: "1.0.0", mode: zip}
+    priority: 2
+    verified: 2026-09-30
+
+  - dataset_id: symile-mimic
+    dataset_name: Symile-MIMIC (CXR + ECG + labs)
+    version: "1.0.0"
+    canonical_url: https://physionet.org/content/symile-mimic/1.0.0/
+    id_namespace: MIMIC
+    domain: multimodal benchmark
+    modality: [XR, ECG, EHR]
+    has: [lab]
+    access_level: credentialed_dua
+    license: PhysioNet Credentialed Health Data License 1.5.0
+    download_method: physionet
+    download_params: {slug: symile-mimic, version: "1.0.0", mode: zip}
+    priority: 3
+    verified: 2026-09-30
+
+  - dataset_id: mimic-ext-cxr-qba
+    dataset_name: MIMIC-Ext-CXR-QBA (42M localized VQA pairs)
+    version: "1.0.1"
+    canonical_url: https://physionet.org/content/mimic-ext-cxr-qba/1.0.1/
+    id_namespace: MIMIC
+    domain: radiology VQA
+    modality: [annotation]
+    has: [bbox, report]
+    access_level: credentialed_dua
+    license: PhysioNet Credentialed Health Data License 1.5.0
+    download_method: physionet
+    download_params: {slug: mimic-ext-cxr-qba, version: "1.0.1", mode: files}
+    priority: 3
+    verified: 2026-09-30
+
+  # ------------------------------------------------------------------ VinDr family (PhysioNet "Restricted" = account + DUA click, no CITI training)
+  - dataset_id: vindr-pcxr
+    dataset_name: VinDr-PCXR (pediatric CXR)
+    version: "1.0.0"
+    canonical_url: https://physionet.org/content/vindr-pcxr/1.0.0/
+    id_namespace: VINDR
+    domain: pediatric radiology
+    body_part: [chest]
+    modality: [XR]
+    image_format: [DICOM]
+    size_bytes: 3.66e10
+    has: [diagnosis, bbox]
+    access_level: registration
+    license: PhysioNet Restricted Health Data License 1.5.0
+    download_method: physionet
+    download_params: {slug: vindr-pcxr, version: "1.0.0", mode: files}
+    priority: 2
+    verified: 2026-09-30
+
+  - dataset_id: vindr-mammo
+    dataset_name: VinDr-Mammo
+    version: "1.0.0"
+    canonical_url: https://physionet.org/content/vindr-mammo/1.0.0/
+    id_namespace: VINDR
+    domain: breast imaging
+    body_part: [breast]
+    modality: [MG]
+    image_format: [DICOM]
+    size_bytes: 3.63e11
+    has: [diagnosis, bbox]
+    diagnosis_system: [BI-RADS]
+    access_level: registration
+    license: PhysioNet Restricted Health Data License 1.5.0
+    download_method: physionet
+    download_params: {slug: vindr-mammo, version: "1.0.0", mode: files}
+    priority: 2
+    verified: 2026-09-30
+
+  - dataset_id: vindr-spinexr
+    dataset_name: VinDr-SpineXR
+    version: "1.0.0"
+    canonical_url: https://physionet.org/content/vindr-spinexr/1.0.0/
+    id_namespace: VINDR
+    domain: spine radiology
+    body_part: [spine]
+    modality: [XR]
+    image_format: [DICOM]
+    size_bytes: 3.86e10
+    has: [diagnosis, bbox]
+    access_level: registration
+    license: PhysioNet Restricted Health Data License 1.5.0
+    download_method: physionet
+    download_params: {slug: vindr-spinexr, version: "1.0.0", mode: files}
+    priority: 3
+    verified: 2026-09-30
+
+  - dataset_id: vindr-cxr-kaggle
+    dataset_name: VinBigData Chest X-ray Abnormalities Detection (Kaggle release of VinDr-CXR)
+    canonical_url: https://www.kaggle.com/competitions/vinbigdata-chest-xray-abnormalities-detection
+    id_namespace: VINDR
+    domain: radiology
+    body_part: [chest]
+    modality: [XR]
+    image_format: [DICOM]
+    num_images: 18000
+    has: [diagnosis, bbox]
+    access_level: registration
+    license: Kaggle competition rules (non-commercial research)
+    download_method: kaggle
+    download_params: {competition: vinbigdata-chest-xray-abnormalities-detection}
+    priority: 2
+    notes: >
+      Second official channel for VinDr-CXR (same images; Kaggle test-set labels were withheld —
+      full test annotations only on PhysioNet). Kaggle account + accept rules, then
+      kaggle competitions download -c vinbigdata-chest-xray-abnormalities-detection
+    verified: null
+
+  # ------------------------------------------------------------------ IDC wave 1 (added 2026-09-30 from systematic IDC v24 scan; see discovery/idc_collections.csv)
+  # MMIST-LUNG (arXiv 2609.05202, Sep 2026) = TCGA-LUAD + TCGA-LUSC + CPTAC-LUAD + CPTAC-LSCC — rebuilt here from IDC + GDC.
+  - dataset_id: tcga-lusc
+    dataset_name: TCGA-LUSC
+    canonical_url: https://www.cancerimagingarchive.net/collection/tcga-lusc/
+    id_namespace: TCGA
+    domain: oncology / lung squamous cell carcinoma
+    body_part: [chest]
+    modality: [CT, PT, NM, SM, clinical, genomics]
+    image_format: [DICOM]
+    num_patients: 37
+    has: [diagnosis, ehr, pathology, genomics, segmentation]
+    diagnosis_system: [ICD-10, ICD-O-3]
+    access_level: open
+    license: CC BY 3.0 (per series); GDC open-access tier
+    download_method: idc
+    download_params: {collection_id: tcga_lusc, gdc_project: TCGA-LUSC, default_modalities: [CT, PT]}
+    priority: 1
+    notes: IDC v24 radiology 14.7 GB (37 patients); SM 610 GB. Part of MMIST-LUNG.
+    verified: 2026-09-30
+
+  - dataset_id: cptac-lscc
+    dataset_name: CPTAC-LSCC
+    canonical_url: https://www.cancerimagingarchive.net/collection/cptac-lscc/
+    id_namespace: CPTAC
+    domain: oncology / lung squamous cell carcinoma
+    body_part: [chest]
+    modality: [CT, PT, SM, clinical, genomics, proteomics]
+    image_format: [DICOM]
+    num_patients: 36
+    has: [diagnosis, ehr, pathology, genomics, proteomics]
+    access_level: open
+    license: CC BY 4.0
+    download_method: idc
+    download_params: {collection_id: cptac_lscc, gdc_project: CPTAC-3, default_modalities: [CT, PT]}
+    priority: 1
+    notes: IDC v24 radiology 29.4 GB; SM 468 GB. Part of MMIST-LUNG.
+    verified: 2026-09-30
+
+  - dataset_id: nsclc-radiogenomics
+    dataset_name: NSCLC Radiogenomics
+    canonical_url: https://www.cancerimagingarchive.net/collection/nsclc-radiogenomics/
+    paper_doi: 10.1038/sdata.2018.202
+    id_namespace: NSCLC_RADIOGENOMICS
+    domain: oncology / NSCLC
+    body_part: [chest]
+    modality: [CT, PT, SEG, clinical, genomics]
+    image_format: [DICOM]
+    num_patients: 211
+    has: [diagnosis, ehr, segmentation, genomics]
+    access_level: open
+    license: CC BY 3.0
+    download_method: idc
+    download_params: {collection_id: nsclc_radiogenomics}
+    priority: 1
+    notes: CT + FDG PET + tumour SEG + 57 clinical columns (histology, EGFR/KRAS, survival). RNA-seq at GEO GSE103584.
+    verified: 2026-09-30
+
+  - dataset_id: c4kc-kits
+    dataset_name: C4KC-KiTS (KiTS19 kidney tumour CT)
+    canonical_url: https://www.cancerimagingarchive.net/collection/c4kc-kits/
+    id_namespace: KITS
+    domain: oncology / renal tumours
+    body_part: [kidney, abdomen]
+    modality: [CT, SEG, clinical]
+    image_format: [DICOM]
+    num_patients: 210
+    has: [diagnosis, ehr, segmentation]
+    access_level: open
+    license: CC BY 3.0
+    download_method: idc
+    download_params: {collection_id: c4kc_kits}
+    priority: 2
+    notes: 36.8 GB; 62 clinical columns (pathology subtype, TNM, comorbidities, outcome).
+    verified: 2026-09-30
+
+  - dataset_id: colorectal-liver-metastases
+    dataset_name: Colorectal-Liver-Metastases
+    canonical_url: https://www.cancerimagingarchive.net/collection/colorectal-liver-metastases/
+    id_namespace: CRLM
+    domain: oncology / liver
+    body_part: [liver, abdomen]
+    modality: [CT, SEG, clinical]
+    image_format: [DICOM]
+    num_patients: 197
+    has: [diagnosis, ehr, segmentation]
+    access_level: open
+    license: CC BY 4.0
+    download_method: idc
+    download_params: {collection_id: colorectal_liver_metastases}
+    priority: 2
+    notes: 9.1 GB; 52 clinical columns incl. survival.
+    verified: 2026-09-30
+
+  - dataset_id: hcc-tace-seg
+    dataset_name: HCC-TACE-Seg
+    canonical_url: https://www.cancerimagingarchive.net/collection/hcc-tace-seg/
+    id_namespace: HCC_TACE
+    domain: oncology / hepatocellular carcinoma
+    body_part: [liver, abdomen]
+    modality: [CT, SEG, clinical]
+    image_format: [DICOM]
+    num_patients: 105
+    has: [diagnosis, ehr, lab, segmentation]
+    access_level: open
+    license: CC BY 4.0
+    download_method: idc
+    download_params: {collection_id: hcc_tace_seg}
+    priority: 2
+    notes: 26.7 GB; 73 clinical columns (labs, BCLC stage, TACE response, survival).
+    verified: 2026-09-30
+
+  - dataset_id: cmmd
+    dataset_name: CMMD (Chinese Mammography Database)
+    canonical_url: https://www.cancerimagingarchive.net/collection/cmmd/
+    paper_doi: 10.1038/s41597-022-01238-0
+    id_namespace: CMMD
+    domain: breast imaging
+    body_part: [breast]
+    modality: [MG, clinical]
+    image_format: [DICOM]
+    num_patients: 1775
+    has: [diagnosis]
+    diagnosis_system: [benign_malignant, molecular_subtype]
+    access_level: open
+    license: CC BY 4.0
+    download_method: idc
+    download_params: {collection_id: cmmd}
+    priority: 2
+    notes: 22.3 GB; biopsy-confirmed benign/malignant + molecular subtype for a subset.
+    verified: 2026-09-30
+
+  - dataset_id: upenn-gbm
+    dataset_name: UPENN-GBM
+    canonical_url: https://www.cancerimagingarchive.net/collection/upenn-gbm/
+    paper_doi: 10.1038/s41597-022-01560-7
+    id_namespace: UPENN_GBM
+    domain: neuro-oncology
+    body_part: [brain]
+    modality: [MR, SEG, clinical, genomics]
+    image_format: [DICOM]
+    num_patients: 630
+    has: [diagnosis, ehr, segmentation, genomics]
+    access_level: open
+    license: CC BY 4.0
+    download_method: idc
+    download_params: {collection_id: upenn_gbm}
+    priority: 2
+    notes: 136 GB; multi-parametric MRI, tumour SEG, survival, IDH/MGMT. Queued for wave 2 (disk budget).
+    verified: 2026-09-30
+
+  - dataset_id: nlst
+    dataset_name: NLST (National Lung Screening Trial) — CT arm
+    canonical_url: https://www.cancerimagingarchive.net/collection/nlst/
+    id_namespace: NLST
+    domain: lung cancer screening
+    body_part: [chest]
+    modality: [CT, SM, clinical]
+    image_format: [DICOM]
+    num_patients: 26254
+    size_bytes: 1.19e13
+    has: [diagnosis, ehr, pathology]
+    access_level: open
+    license: CC BY 4.0
+    download_method: idc
+    download_params: {collection_id: nlst, default_modalities: [CT]}
+    priority: 3
+    notes: >
+      10.9 TB CT — does not fit on E: (1.1 TB free). Clinical tables (99 cols: screening results, cancer
+      diagnosis, death) are small: pull metadata with --dry-run and download a cancer-enriched patient subset.
+    verified: 2026-09-30
+
+  # ------------------------------------------------------------------ Literature scan 2026-09-30: OPEN, direct download (Zenodo / HF)
+  - dataset_id: totalsegmentator-mri
+    dataset_name: TotalSegmentator MRI dataset v3
+    version: "3.0.0"
+    canonical_url: https://zenodo.org/records/22688334
+    paper_doi: 10.5281/zenodo.22688334
+    id_namespace: TOTALSEG_MRI
+    domain: anatomy segmentation
+    body_part: [whole_body]
+    modality: [MR, SEG]
+    image_format: [NIfTI]
+    num_images: 1296
+    size_bytes: 1.52e10
+    has: [segmentation]
+    access_level: open
+    license: CC BY 4.0
+    download_method: zenodo
+    download_params: {record: 22688334}
+    priority: 2
+    notes: Released 2026-09-10. 50 structures, clinical-routine MRI.
+    verified: 2026-09-30
+
+  - dataset_id: totalsegmentator-ct
+    dataset_name: TotalSegmentator CT dataset v2
+    version: "2.0.1"
+    canonical_url: https://zenodo.org/records/10047292
+    paper_doi: 10.1148/ryai.230024
+    id_namespace: TOTALSEG_CT
+    domain: anatomy segmentation
+    body_part: [whole_body]
+    modality: [CT, SEG]
+    image_format: [NIfTI]
+    num_images: 1228
+    size_bytes: 2.36e10
+    has: [segmentation]
+    access_level: open
+    license: CC BY 4.0
+    download_method: zenodo
+    download_params: {record: 10047292}
+    priority: 2
+    notes: 117 structures; meta.csv has age/sex/pathology/institution.
+    verified: 2026-09-30
+
+  - dataset_id: waw-tace
+    dataset_name: WAW-TACE (HCC multiphase CT + clinical)
+    canonical_url: https://zenodo.org/records/12741586
+    paper_doi: 10.5281/zenodo.12741586
+    id_namespace: WAW_TACE
+    domain: oncology / hepatocellular carcinoma
+    body_part: [liver, abdomen]
+    modality: [CT, SEG, clinical]
+    image_format: [NIfTI]
+    num_patients: 233
+    size_bytes: 4.82e10
+    has: [diagnosis, ehr, lab, segmentation]
+    access_level: open
+    license: CC BY 4.0
+    download_method: zenodo
+    download_params: {record: 12741586}
+    priority: 2
+    notes: Treatment-naive HCC before TACE; tumour masks, radiomics, extensive clinical + outcome. Pairs with hcc-tace-seg (IDC).
+    verified: 2026-09-30
+
+  - dataset_id: bcmid
+    dataset_name: BCMID — Breast Cancer Multimodal Imaging Dataset
+    canonical_url: https://zenodo.org/records/19402690
+    id_namespace: BCMID
+    domain: breast imaging
+    body_part: [breast]
+    modality: [US, MG, clinical]
+    image_format: [JPEG]
+    size_bytes: 1.29e10
+    has: [diagnosis]
+    access_level: open
+    license: CC BY 4.0
+    download_method: zenodo
+    download_params: {record: 19402690}
+    priority: 3
+    notes: Egypt; per-patient ultrasound + mammogram with diagnosis. Updated 2026-04.
+    verified: 2026-09-30
+
+  - dataset_id: bus-bra
+    dataset_name: BUS-BRA breast ultrasound
+    version: "1.0"
+    canonical_url: https://zenodo.org/records/8231412
+    id_namespace: BUSBRA
+    domain: breast imaging
+    body_part: [breast]
+    modality: [US, SEG]
+    image_format: [PNG]
+    num_patients: 1064
+    has: [diagnosis, segmentation]
+    diagnosis_system: [BI-RADS, biopsy]
+    access_level: open
+    license: CC BY 4.0
+    download_method: zenodo
+    download_params: {record: 8231412}
+    priority: 3
+    verified: 2026-09-30
+
+  - dataset_id: breastdcedl-ambl
+    dataset_name: BreastDCEDL_AMBL (DCE-MRI, benign/malignant lesions)
+    canonical_url: https://zenodo.org/records/17253223
+    id_namespace: AMBL
+    domain: breast imaging
+    body_part: [breast]
+    modality: [MR, SEG]
+    image_format: [NIfTI]
+    num_patients: 88
+    size_bytes: 1.55e10
+    has: [diagnosis, segmentation]
+    access_level: open
+    license: CC BY 4.0
+    download_method: zenodo
+    download_params: {record: 17253223}
+    priority: 3
+    verified: 2026-09-30
+
+  - dataset_id: han-seg
+    dataset_name: HaN-Seg (head & neck OAR, paired CT + MR)
+    version: "1.0"
+    canonical_url: https://zenodo.org/records/7442914
+    id_namespace: HANSEG
+    domain: radiotherapy
+    body_part: [head_neck]
+    modality: [CT, MR, SEG]
+    image_format: [NRRD]
+    num_patients: 42
+    has: [segmentation]
+    access_level: open
+    license: CC BY-NC-ND 4.0
+    download_method: zenodo
+    download_params: {record: 7442914}
+    priority: 3
+    verified: 2026-09-30
+
+  - dataset_id: rocov2
+    dataset_name: ROCOv2 (radiology image-caption pairs from PMC)
+    canonical_url: https://huggingface.co/datasets/eltorio/ROCOv2-radiology
+    paper_doi: 10.1038/s41597-024-03496-6
+    id_namespace: ROCO
+    domain: radiology image-text
+    modality: [XR, CT, MR, US, report]
+    image_format: [JPEG]
+    size_bytes: 1.86e10
+    has: [report]
+    diagnosis_system: [UMLS]
+    access_level: open
+    license: CC BY-NC-SA 4.0 (images carry their PMC article licences)
+    download_method: huggingface
+    download_params: {repo: eltorio/ROCOv2-radiology}
+    priority: 3
+    notes: ~80k image-caption pairs with UMLS CUIs. Canonical record is Zenodo 10821435; HF mirror used for convenience.
+    verified: 2026-09-30
+
+  # ------------------------------------------------------------------ Literature scan: high value but gated / too large — request access
+  - dataset_id: merlin-abdominal-ct
+    dataset_name: Merlin Abdominal CT Dataset (Stanford)
+    canonical_url: https://stanfordaimi.azurewebsites.net/datasets/60b9c7ff-877b-48ce-96c3-0194c8205c40
+    paper_doi: 10.1038/s41586-026-10181-8
+    id_namespace: MERLIN
+    domain: abdominal CT + EHR
+    body_part: [abdomen]
+    modality: [CT, report, EHR]
+    image_format: [NIfTI]
+    num_patients: 18317
+    num_studies: 25494
+    has: [diagnosis, report, ehr]
+    diagnosis_system: [ICD, free_text]
+    access_level: registration
+    license: Stanford AIMI Research Use Agreement
+    download_method: aimi
+    priority: 1
+    notes: Nature 2026. CT + findings text + ICD/phecode + 5-year disease labels. Download with azcopy after DUA.
+    verified: 2026-09-30
+
+  - dataset_id: inspect
+    dataset_name: INSPECT (CTPA + reports + EHR outcomes)
+    canonical_url: https://aimi.stanford.edu/datasets/inspect-multimodal-dataset-pulmonary-embolism-diagnosis-and-prognosis
+    paper_doi: 10.48550/arXiv.2311.10798
+    id_namespace: INSPECT
+    domain: pulmonary embolism
+    body_part: [chest]
+    modality: [CT, report, EHR]
+    has: [diagnosis, report, ehr]
+    access_level: registration
+    license: Stanford AIMI Research Use Agreement
+    download_method: aimi
+    priority: 1
+    notes: ~23k CTPA studies, impressions, longitudinal EHR (OMOP), PE + mortality/readmission outcomes.
+    verified: null
+
+  - dataset_id: ct-rate
+    dataset_name: CT-RATE (chest CT + radiology reports)
+    canonical_url: https://huggingface.co/datasets/ibrahimhamamci/CT-RATE
+    id_namespace: CTRATE
+    domain: chest CT
+    body_part: [chest]
+    modality: [CT, report]
+    image_format: [NIfTI]
+    size_bytes: 2.13e13
+    has: [diagnosis, report]
+    access_level: registration
+    license: CC BY-NC-SA 4.0
+    download_method: huggingface
+    download_params: {repo: ibrahimhamamci/CT-RATE}
+    priority: 2
+    notes: >
+      HF repo is 21.3 TB (all versions/preprocessings) — never snapshot it whole; use allow_patterns for
+      reports/labels + a volume subset. Accept terms with your own HF account, then `hf auth login`.
+    verified: 2026-09-30
+
+  - dataset_id: rexgradient-160k
+    dataset_name: ReXGradient-160K (CXR + free-text reports, multi-site US)
+    canonical_url: https://huggingface.co/datasets/rajpurkarlab/ReXGradient-160K
+    paper_doi: 10.48550/arXiv.2505.00228
+    id_namespace: REXGRADIENT
+    domain: radiology
+    body_part: [chest]
+    modality: [XR, report]
+    size_bytes: 1.556e11
+    has: [report]
+    access_level: registration
+    license: HF gated, custom research licence
+    download_method: huggingface
+    download_params: {repo: rajpurkarlab/ReXGradient-160K}
+    priority: 2
+    verified: 2026-09-30
+
+  - dataset_id: rexgroundingct
+    dataset_name: ReXGroundingCT (report findings -> 3D masks on CT-RATE)
+    canonical_url: https://huggingface.co/datasets/rajpurkarlab/ReXGroundingCT
+    paper_doi: 10.48550/arXiv.2507.22030
+    id_namespace: CTRATE
+    domain: chest CT grounding
+    modality: [SEG, report]
+    size_bytes: 3.6e9
+    has: [segmentation, report]
+    access_level: registration
+    license: CC BY-NC-SA 4.0
+    download_method: huggingface
+    download_params: {repo: rajpurkarlab/ReXGroundingCT}
+    priority: 2
+    verified: 2026-09-30
+
+  - dataset_id: histai
+    dataset_name: HISTAI (47k-case WSI + clinical metadata)
+    canonical_url: https://huggingface.co/datasets/histai/HISTAI-metadata
+    paper_doi: 10.48550/arXiv.2505.12120
+    id_namespace: HISTAI
+    domain: computational pathology
+    modality: [SM, clinical, report]
+    has: [diagnosis, pathology, report]
+    diagnosis_system: [ICD-10]
+    access_level: registration
+    license: CC BY-NC 4.0 (HF manual approval)
+    download_method: huggingface
+    download_params: {repo: histai/HISTAI-metadata}
+    priority: 2
+    notes: Metadata repo first; per-organ WSI repos (HISTAI-breast, -thorax, ...) are TB-scale.
+    verified: 2026-09-30
+
+  - dataset_id: abdomenatlas-3-mini
+    dataset_name: AbdomenAtlas 3.0 Mini
+    canonical_url: https://huggingface.co/datasets/AbdomenAtlas/AbdomenAtlas3.0Mini
+    id_namespace: ABDOMENATLAS
+    domain: abdominal CT segmentation + reports
+    body_part: [abdomen]
+    modality: [CT, SEG, report]
+    size_bytes: 5.855e11
+    has: [segmentation, report]
+    access_level: open
+    license: CC BY-NC-SA 4.0 (source CT licences apply)
+    download_method: huggingface
+    download_params: {repo: AbdomenAtlas/AbdomenAtlas3.0Mini}
+    priority: 3
+    notes: 586 GB — queued behind disk budget. Base CTs for DeepTumorVQA 2.0 (tumor-vqa/DeepTumorVQA_2.0, 107 GB, CC BY 4.0).
+    verified: 2026-09-30
+
+  - dataset_id: radgenome-chestct
+    dataset_name: RadGenome-ChestCT
+    canonical_url: https://huggingface.co/datasets/RadGenome/RadGenome-ChestCT
+    id_namespace: CTRATE
+    domain: chest CT grounded reports
+    modality: [CT, SEG, report]
+    size_bytes: 1.325e12
+    has: [segmentation, report]
+    access_level: open
+    license: "HF card says CC BY 4.0, but volumes derive from CT-RATE (CC BY-NC-SA 4.0) — treat as NC-SA"
+    download_method: huggingface
+    download_params: {repo: RadGenome/RadGenome-ChestCT}
+    priority: 3
+    notes: 1.3 TB; licence conflict flagged. Pull annotations only (allow_patterns) if needed.
+    verified: 2026-09-30
+
+  - dataset_id: mmist-lung
+    dataset_name: MMIST-LUNG (curated multimodal lung cancer benchmark)
+    canonical_url: https://multi-modal-ist.github.io/datasets/Lung/
+    paper_doi: 10.48550/arXiv.2609.05202
+    id_namespace: TCGA   # plus CPTAC
+    domain: oncology / lung cancer
+    modality: [CT, PT, SM, clinical, genomics]
+    num_patients: 1365
+    has: [diagnosis, ehr, pathology, genomics]
+    access_level: open
+    license: derived from TCGA/CPTAC (CC BY 3.0/4.0, GDC open tier)
+    download_method: manual
+    priority: 2
+    notes: >
+      Sep 2026. Built from TCGA-LUAD/LUSC + CPTAC-LUAD/LSCC — all four are in this registry and pulled via
+      IDC+GDC. Only the curated split/benchmark files need fetching from the MMIST site/GitHub (ritacmendes/MMIST-LUNG).
+    verified: 2026-09-30
+
+  # ------------------------------------------------------------------ IDC wave 3 (2026-09-30, from local IDC v24 index; all direct-reachable via AWS)
+  - dataset_id: prostatex
+    dataset_name: PROSTATEx
+    canonical_url: https://www.cancerimagingarchive.net/collection/prostatex/
+    id_namespace: PROSTATEX
+    domain: prostate cancer
+    body_part: [prostate]
+    modality: [MR, clinical]
+    image_format: [DICOM]
+    num_patients: 346
+    size_bytes: 1.7e+10
+    has: [diagnosis, segmentation]
+    access_level: open
+    license: CC BY 3.0
+    download_method: idc
+    download_params: {collection_id: prostatex}
+    priority: 2
+    notes: "MRI + lesion location + clinical significance (Gleason-based ClinSig) — PROSTATEx challenge. IDC v24 radiology 15.8 GB; 6 clinical tables / 35 columns."
+    verified: 2026-09-30
+
+  - dataset_id: prostate-mri-us-biopsy
+    dataset_name: Prostate-MRI-US-Biopsy
+    canonical_url: https://www.cancerimagingarchive.net/collection/prostate-mri-us-biopsy/
+    id_namespace: PROSTATE_MRI_US_BIOPSY
+    domain: prostate cancer
+    body_part: [prostate]
+    modality: [MR, US, clinical]
+    image_format: [DICOM]
+    num_patients: 1151
+    size_bytes: 8.34e+10
+    has: [diagnosis, segmentation, pathology]
+    access_level: open
+    license: CC BY 4.0
+    download_method: idc
+    download_params: {collection_id: prostate_mri_us_biopsy}
+    priority: 2
+    notes: "MRI + TRUS with targeted-biopsy pathology (Gleason) for 1151 patients. IDC v24 radiology 77.7 GB; 1 clinical tables / 19 columns."
+    verified: 2026-09-30
+
+  - dataset_id: spie-aapm-lung-ct-challenge
+    dataset_name: SPIE-AAPM Lung CT Challenge
+    canonical_url: https://www.cancerimagingarchive.net/collection/spie-aapm-lung-ct-challenge/
+    id_namespace: SPIE_AAPM_LUNG_CT_CHALLENGE
+    domain: lung nodule malignancy
+    body_part: [chest]
+    modality: [CT, clinical]
+    image_format: [DICOM]
+    num_patients: 70
+    size_bytes: 1.27e+10
+    has: [diagnosis, segmentation]
+    access_level: open
+    license: CC BY 3.0
+    download_method: idc
+    download_params: {collection_id: spie_aapm_lung_ct_challenge}
+    priority: 2
+    notes: "CT with nodule malignancy diagnosis (benign/malignant). IDC v24 radiology 11.8 GB; 2 clinical tables / 20 columns."
+    verified: 2026-09-30
+
+  - dataset_id: lung-pet-ct-dx
+    dataset_name: Lung-PET-CT-Dx
+    canonical_url: https://www.cancerimagingarchive.net/collection/lung-pet-ct-dx/
+    id_namespace: LUNG_PET_CT_DX
+    domain: lung cancer histology
+    body_part: [chest]
+    modality: [CT, PT, clinical]
+    image_format: [DICOM]
+    num_patients: 355
+    size_bytes: 1.33e+11
+    has: [diagnosis, bbox]
+    access_level: open
+    license: CC BY 4.0
+    download_method: idc
+    download_params: {collection_id: lung_pet_ct_dx}
+    priority: 2
+    notes: "CT/PET with pathology-confirmed histological type (ADC/SCC/SCLC/LCC) and tumour boxes. IDC v24 radiology 124.2 GB; 3 clinical tables / 27 columns."
+    verified: 2026-09-30
+
+  - dataset_id: nsclc-radiomics
+    dataset_name: NSCLC-Radiomics (Lung1)
+    canonical_url: https://www.cancerimagingarchive.net/collection/nsclc-radiomics/
+    id_namespace: NSCLC_RADIOMICS
+    domain: NSCLC survival
+    body_part: [chest]
+    modality: [CT, clinical]
+    image_format: [DICOM]
+    num_patients: 422
+    size_bytes: 2.82e+10
+    has: [diagnosis, ehr, segmentation]
+    access_level: open
+    license: CC BY-NC 3.0 (non-commercial)
+    download_method: idc
+    download_params: {collection_id: nsclc_radiomics}
+    priority: 2
+    notes: "Pre-treatment CT + expert GTV + overall survival; standard radiomics benchmark. IDC v24 radiology 26.3 GB; 1 clinical tables / 12 columns."
+    verified: 2026-09-30
+
+  - dataset_id: tcga-lihc
+    dataset_name: TCGA-LIHC
+    canonical_url: https://www.cancerimagingarchive.net/collection/tcga-lihc/
+    id_namespace: TCGA
+    domain: hepatocellular carcinoma
+    body_part: [liver]
+    modality: [CT, MR, PT, clinical]
+    image_format: [DICOM]
+    num_patients: 97
+    size_bytes: 5.92e+10
+    has: [diagnosis, ehr, genomics, pathology]
+    access_level: open
+    license: CC BY 3.0
+    download_method: idc
+    download_params: {collection_id: tcga_lihc, gdc_project: TCGA-LIHC, default_modalities: [CT, MR, PT]}
+    priority: 2
+    notes: "CT/MR/PET + GDC clinical + genomics + WSI (SM not downloaded by default). IDC v24 radiology 55.1 GB; 2 clinical tables / 15 columns."
+    verified: 2026-09-30
+
+  - dataset_id: tcga-kirc
+    dataset_name: TCGA-KIRC
+    canonical_url: https://www.cancerimagingarchive.net/collection/tcga-kirc/
+    id_namespace: TCGA
+    domain: clear cell renal cell carcinoma
+    body_part: [kidney]
+    modality: [CR, CT, MR, clinical]
+    image_format: [DICOM]
+    num_patients: 267
+    size_bytes: 9.6e+10
+    has: [diagnosis, ehr, genomics, pathology, segmentation]
+    access_level: open
+    license: CC BY 3.0
+    download_method: idc
+    download_params: {collection_id: tcga_kirc, gdc_project: TCGA-KIRC, default_modalities: [CR, CT, MR]}
+    priority: 2
+    notes: "CT/MR + GDC clinical + genomics + WSI (SM not downloaded by default). IDC v24 radiology 89.4 GB; 1 clinical tables / 25 columns."
+    verified: 2026-09-30
+
+  - dataset_id: breast-diagnosis
+    dataset_name: BREAST-DIAGNOSIS
+    canonical_url: https://www.cancerimagingarchive.net/collection/breast-diagnosis/
+    id_namespace: BREAST_DIAGNOSIS
+    domain: breast cancer diagnosis
+    body_part: [breast]
+    modality: [CT, MG, MR, PT, clinical]
+    image_format: [DICOM]
+    num_patients: 88
+    size_bytes: 6.38e+10
+    has: [diagnosis]
+    access_level: open
+    license: CC BY 3.0
+    download_method: idc
+    download_params: {collection_id: breast_diagnosis}
+    priority: 2
+    notes: "MG/MR/PET/CT with pathology diagnosis. IDC v24 radiology 59.4 GB; 1 clinical tables / 18 columns."
+    verified: 2026-09-30
+
+  - dataset_id: adrenal-acc-ki67-seg
+    dataset_name: Adrenal-ACC-Ki67-Seg
+    canonical_url: https://www.cancerimagingarchive.net/collection/adrenal-acc-ki67-seg/
+    id_namespace: ADRENAL_ACC_KI67_SEG
+    domain: adrenocortical carcinoma
+    body_part: [adrenal]
+    modality: [CT, clinical]
+    image_format: [DICOM]
+    num_patients: 53
+    size_bytes: 1.01e+10
+    has: [diagnosis, segmentation]
+    access_level: open
+    license: CC BY 4.0
+    download_method: idc
+    download_params: {collection_id: adrenal_acc_ki67_seg}
+    priority: 2
+    notes: "CT + tumour SEG + Ki-67 index. IDC v24 radiology 9.4 GB; 1 clinical tables / 29 columns."
+    verified: 2026-09-30
+
+  - dataset_id: soft-tissue-sarcoma
+    dataset_name: Soft-tissue-Sarcoma
+    canonical_url: https://www.cancerimagingarchive.net/collection/soft-tissue-sarcoma/
+    id_namespace: SOFT_TISSUE_SARCOMA
+    domain: soft-tissue sarcoma
+    body_part: [extremities]
+    modality: [CT, MR, PT, clinical]
+    image_format: [DICOM]
+    num_patients: 51
+    size_bytes: 9.99e+09
+    has: [diagnosis, ehr, segmentation]
+    access_level: open
+    license: CC BY 3.0
+    download_method: idc
+    download_params: {collection_id: soft_tissue_sarcoma}
+    priority: 2
+    notes: "FDG-PET/CT + MR, lung-metastasis outcome. IDC v24 radiology 9.3 GB; 2 clinical tables / 17 columns."
+    verified: 2026-09-30
+
+  - dataset_id: spine-mets-ct-seg
+    dataset_name: Spine-Mets-CT-SEG
+    canonical_url: https://www.cancerimagingarchive.net/collection/spine-mets-ct-seg/
+    id_namespace: SPINE_METS_CT_SEG
+    domain: spinal metastases
+    body_part: [spine]
+    modality: [CT, clinical]
+    image_format: [DICOM]
+    num_patients: 55
+    size_bytes: 1.97e+10
+    has: [diagnosis, segmentation]
+    access_level: open
+    license: CC BY 4.0
+    download_method: idc
+    download_params: {collection_id: spine_mets_ct_seg}
+    priority: 2
+    notes: "CT + metastasis SEG + primary cancer type. IDC v24 radiology 18.3 GB; 1 clinical tables / 14 columns."
+    verified: 2026-09-30
+
+  - dataset_id: covid-19-ar
+    dataset_name: COVID-19-AR
+    canonical_url: https://www.cancerimagingarchive.net/collection/covid-19-ar/
+    id_namespace: COVID_19_AR
+    domain: COVID-19
+    body_part: [chest]
+    modality: [CR, CT, DX, clinical]
+    image_format: [DICOM]
+    num_patients: 105
+    size_bytes: 2.09e+10
+    has: [diagnosis, ehr]
+    access_level: open
+    license: CC BY 4.0
+    download_method: idc
+    download_params: {collection_id: covid_19_ar}
+    priority: 2
+    notes: "CXR/CT + clinical outcomes (ICU, intubation, death). IDC v24 radiology 19.5 GB; 2 clinical tables / 40 columns."
+    verified: 2026-09-30
+
+  - dataset_id: remind
+    dataset_name: ReMIND
+    canonical_url: https://www.cancerimagingarchive.net/collection/remind/
+    id_namespace: REMIND
+    domain: brain tumour neurosurgery
+    body_part: [brain]
+    modality: [MR, US, clinical]
+    image_format: [DICOM]
+    num_patients: 114
+    size_bytes: 4.49e+10
+    has: [diagnosis, segmentation]
+    access_level: open
+    license: CC BY 4.0
+    download_method: idc
+    download_params: {collection_id: remind}
+    priority: 2
+    notes: "pre/intra-op MR + intra-op US + SEG + clinical. IDC v24 radiology 41.8 GB; 1 clinical tables / 34 columns."
+    verified: 2026-09-30
+
+  - dataset_id: ispy1
+    dataset_name: I-SPY 1 (ACRIN 6657)
+    canonical_url: https://www.cancerimagingarchive.net/collection/ispy1/
+    id_namespace: ISPY1
+    domain: breast cancer neoadjuvant response
+    body_part: [breast]
+    modality: [MR, clinical]
+    image_format: [DICOM]
+    num_patients: 222
+    size_bytes: 7.35e+10
+    has: [diagnosis, ehr, segmentation]
+    access_level: open
+    license: CC BY 3.0
+    download_method: idc
+    download_params: {collection_id: ispy1}
+    priority: 2
+    notes: "serial DCE-MRI + pCR / recurrence-free survival. IDC v24 radiology 68.4 GB; 2 clinical tables / 24 columns."
+    verified: 2026-09-30
+
+  # ------------------------------------------------------------------ OpenNeuro clinical (2026-09-30; s3://openneuro.org is direct-reachable)
+  - dataset_id: soop-stroke
+    dataset_name: "Stroke Outcome Optimization Project (SOOP)"
+    version: "1.1.2"
+    canonical_url: https://openneuro.org/datasets/ds004889
+    id_namespace: OPENNEURO_DS004889
+    domain: stroke
+    body_part: [brain]
+    modality: [MRI]
+    image_format: [NIfTI, BIDS]
+    num_patients: 1715
+    size_bytes: 7.19e+10
+    has: [diagnosis, ehr, segmentation]
+    access_level: open
+    license: CC0
+    download_method: openneuro
+    download_params: {accession: ds004889}
+    priority: 2
+    notes: "Stroke Outcome Optimization Project: acute stroke MRI + clinical (NIHSS, outcome). 1715 subjects, 71.9 GB. Labels live in participants.tsv (BIDS)."
+    verified: 2026-09-30
+
+  - dataset_id: ideas-epilepsy
+    dataset_name: "The Imaging Database for Epilepsy And Surgery (IDEAS)"
+    version: "1.0.0"
+    canonical_url: https://openneuro.org/datasets/ds005602
+    id_namespace: OPENNEURO_DS005602
+    domain: epilepsy surgery
+    body_part: [brain]
+    modality: [MRI]
+    image_format: [NIfTI, BIDS]
+    num_patients: 542
+    size_bytes: 4.1e+09
+    has: [diagnosis, ehr, segmentation]
+    access_level: open
+    license: CC0
+    download_method: openneuro
+    download_params: {accession: ds005602}
+    priority: 2
+    notes: "IDEAS: pre-op MRI + surgical outcome (Engel) for drug-resistant epilepsy. 542 subjects, 4.1 GB. Labels live in participants.tsv (BIDS)."
+    verified: 2026-09-30
+
+  - dataset_id: ideas2-epilepsy-dmri
+    dataset_name: "Open diffusion MRI and connectivity data for epilepsy and surgery: The IDEAS II release"
+    version: "1.0.0"
+    canonical_url: https://openneuro.org/datasets/ds007401
+    id_namespace: OPENNEURO_DS007401
+    domain: epilepsy surgery
+    body_part: [brain]
+    modality: [MRI]
+    image_format: [NIfTI, BIDS]
+    num_patients: 542
+    size_bytes: 2.05e+10
+    has: [diagnosis]
+    access_level: open
+    license: CC0
+    download_method: openneuro
+    download_params: {accession: ds007401}
+    priority: 2
+    notes: "IDEAS II: diffusion MRI + connectivity for the IDEAS cohort. 542 subjects, 20.46 GB. Labels live in participants.tsv (BIDS)."
+    verified: 2026-09-30
+
+  - dataset_id: fcd2-epilepsy
+    dataset_name: "An open presurgery MRI dataset of people with epilepsy and focal cortical dysplasia type II"
+    version: "1.0.6"
+    canonical_url: https://openneuro.org/datasets/ds004199
+    id_namespace: OPENNEURO_DS004199
+    domain: focal cortical dysplasia
+    body_part: [brain]
+    modality: [MRI]
+    image_format: [NIfTI, BIDS]
+    num_patients: 170
+    size_bytes: 4.15e+09
+    has: [diagnosis, segmentation]
+    access_level: open
+    license: CC0
+    download_method: openneuro
+    download_params: {accession: ds004199}
+    priority: 2
+    notes: "Pre-surgery MRI of people with epilepsy and FCD type II, lesion masks. 170 subjects, 4.15 GB. Labels live in participants.tsv (BIDS)."
+    verified: 2026-09-30
+
+  - dataset_id: ccnrp-chronic-lesion
+    dataset_name: "Chronic Brain Lesion MRI with Manual Lesion Segmentations (CCNRP, Cambridge)"
+    version: "1.0.0"
+    canonical_url: https://openneuro.org/datasets/ds007212
+    id_namespace: OPENNEURO_DS007212
+    domain: chronic brain lesions
+    body_part: [brain]
+    modality: [MRI]
+    image_format: [NIfTI, BIDS]
+    num_patients: 204
+    size_bytes: 1.52e+09
+    has: [segmentation, diagnosis]
+    access_level: open
+    license: CC0
+    download_method: openneuro
+    download_params: {accession: ds007212}
+    priority: 2
+    notes: "Chronic brain lesion MRI with manual lesion segmentations (Cambridge). 204 subjects, 1.52 GB. Labels live in participants.tsv (BIDS)."
+    verified: 2026-09-30
+
+  - dataset_id: tle-unam
+    dataset_name: "Temporal Lobe Epilepsy - UNAM"
+    version: "1.1.4"
+    canonical_url: https://openneuro.org/datasets/ds004469
+    id_namespace: OPENNEURO_DS004469
+    domain: temporal lobe epilepsy
+    body_part: [brain]
+    modality: [MRI]
+    image_format: [NIfTI, BIDS]
+    num_patients: 66
+    size_bytes: 7.7e+09
+    has: [diagnosis]
+    access_level: open
+    license: CC0
+    download_method: openneuro
+    download_params: {accession: ds004469}
+    priority: 2
+    notes: "Temporal lobe epilepsy patients vs controls (UNAM). 66 subjects, 7.7 GB. Labels live in participants.tsv (BIDS)."
+    verified: 2026-09-30
+
+  - dataset_id: ogm-meningioma
+    dataset_name: "Multimodal Brain MRI and Clinical Data in Olfactory Groove Meningioma: A Prospective Data Report"
+    version: "1.0.2"
+    canonical_url: https://openneuro.org/datasets/ds007345
+    id_namespace: OPENNEURO_DS007345
+    domain: olfactory groove meningioma
+    body_part: [brain]
+    modality: [MRI]
+    image_format: [NIfTI, BIDS]
+    num_patients: 60
+    size_bytes: 1.2e+10
+    has: [diagnosis, ehr]
+    access_level: open
+    license: CC0
+    download_method: openneuro
+    download_params: {accession: ds007345}
+    priority: 2
+    notes: "Multimodal brain MRI + clinical data in olfactory groove meningioma. 60 subjects, 11.97 GB. Labels live in participants.tsv (BIDS)."
+    verified: 2026-09-30
+
+  - dataset_id: glioma-apt-who2021
+    dataset_name: "Utilizing Amide Proton Transfer Technique to Characterise Diffuse Gliomas Based on WHO 2021 Classification of "
+    version: "1.0.0"
+    canonical_url: https://openneuro.org/datasets/ds004717
+    id_namespace: OPENNEURO_DS004717
+    domain: diffuse glioma
+    body_part: [brain]
+    modality: [MRI]
+    image_format: [NIfTI, BIDS]
+    num_patients: 42
+    size_bytes: 3.6e+09
+    has: [diagnosis, genomics]
+    access_level: open
+    license: CC0
+    download_method: openneuro
+    download_params: {accession: ds004717}
+    priority: 2
+    notes: "APT-weighted MRI of diffuse gliomas with WHO 2021 molecular classification. 42 subjects, 3.6 GB. Labels live in participants.tsv (BIDS)."
+    verified: 2026-09-30
+
+  - dataset_id: pd-mci-rsfmri
+    dataset_name: "Resting State MRI data from healthy control (HC), Parkinson's disease with normal cognition (PD-NC), and Parki"
+    version: "1.0.0"
+    canonical_url: https://openneuro.org/datasets/ds005892
+    id_namespace: OPENNEURO_DS005892
+    domain: Parkinson's disease
+    body_part: [brain]
+    modality: [MRI]
+    image_format: [NIfTI, BIDS]
+    num_patients: 55
+    size_bytes: 2.37e+09
+    has: [diagnosis]
+    access_level: open
+    license: CC0
+    download_method: openneuro
+    download_params: {accession: ds005892}
+    priority: 2
+    notes: "HC vs PD-NC vs PD-MCI resting-state + structural MRI. 55 subjects, 2.37 GB. Labels live in participants.tsv (BIDS)."
+    verified: 2026-09-30
+
+  - dataset_id: nimh-ctnb-smri
+    dataset_name: "Structural MRI dataset from NIMH: Clinical and Translational Neuroscience Branch and Behavioral Endocrinology "
+    version: "1.0.1"
+    canonical_url: https://openneuro.org/datasets/ds005112
+    id_namespace: OPENNEURO_DS005112
+    domain: psychiatric disorders
+    body_part: [brain]
+    modality: [MRI]
+    image_format: [NIfTI, BIDS]
+    num_patients: 135
+    size_bytes: 7.26e+09
+    has: [diagnosis]
+    access_level: open
+    license: CC0
+    download_method: openneuro
+    download_params: {accession: ds005112}
+    priority: 2
+    notes: "NIMH clinical structural MRI (mood/endocrine disorders + controls). 135 subjects, 7.26 GB. Labels live in participants.tsv (BIDS)."
+    verified: 2026-09-30
+
+  # ------------------------------------------------------------------ Harvard Dataverse (direct-reachable)
+  - dataset_id: ham10000
+    dataset_name: HAM10000 (dermatoscopic images, histopathology-confirmed diagnoses)
+    version: "4.0"
+    canonical_url: https://doi.org/10.7910/DVN/DBW86T
+    paper_doi: 10.1038/sdata.2018.161
+    id_namespace: ISIC
+    domain: dermatology
+    body_part: [skin]
+    modality: [dermoscopy]
+    image_format: [JPEG]
+    num_images: 10015
+    size_bytes: 3.20e+9
+    has: [diagnosis, segmentation]
+    diagnosis_system: [histopathology, follow-up, expert_consensus]
+    access_level: open
+    license: CC BY-NC 4.0
+    download_method: dataverse
+    download_params: {doi: "doi:10.7910/DVN/DBW86T"}
+    priority: 2
+    notes: 7 diagnostic classes; dx_type column says whether the label is histo / follow-up / consensus / confocal — keep it as label provenance. Images also in ISIC Archive (same ISIC IDs).
+    verified: 2026-09-30
+
+  - dataset_id: milk10k
+    dataset_name: MILK10k (paired clinical + dermoscopic images)
+    version: "1.1"
+    canonical_url: https://doi.org/10.7910/DVN/FSXRAQ
+    id_namespace: ISIC
+    domain: dermatology
+    body_part: [skin]
+    modality: [dermoscopy, clinical_photo]
+    image_format: [JPEG]
+    num_images: 10480
+    size_bytes: 3.6e+8
+    has: [diagnosis]
+    access_level: open
+    license: CC BY-NC 4.0
+    download_method: dataverse
+    download_params: {doi: "doi:10.7910/DVN/FSXRAQ"}
+    priority: 2
+    notes: 5,240 lesions x (close-up + dermoscopy), age/sex/skin tone/site metadata, MONET concept features.
+    verified: 2026-09-30
+
+  - dataset_id: deepsight-mammo-2d-multiview
+    dataset_name: 2D Mammograms Multiview + DeepSight Cancer Annotations
+    canonical_url: https://doi.org/10.7910/DVN/HYFOWN
+    id_namespace: DEEPSIGHT
+    domain: breast imaging
+    body_part: [breast]
+    modality: [MG]
+    size_bytes: 9.357e+10
+    has: [diagnosis]
+    access_level: open
+    license: MIT
+    download_method: dataverse
+    download_params: {doi: "doi:10.7910/DVN/HYFOWN"}
+    priority: 3
+    notes: >
+      Published 2026-08. "DeepSight Cancer Annotations" appear to be produced by the DeepSight AI system —
+      treat as AI-derived labels, not expert ground truth, until the provenance is confirmed. Sister records:
+      2D single-view (KXJCIU, 937 GB) and 3D tomosynthesis (E7GHGE, 8.7 TB) — not planned.
+    verified: 2026-09-30
+
+  # ------------------------------------------------ Research expansion 2026-10-15
+  - dataset_id: gse103584
+    dataset_name: GSE103584 NSCLC Radiogenomics RNA-seq
+    canonical_url: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE103584
+    id_namespace: NSCLC_RADIOGENOMICS
+    domain: lung cancer radiogenomics
+    body_part: [lung]
+    modality: [RNA]
+    image_format: []
+    has: [genomics]
+    access_level: open
+    license: GEO public access; submitter-specific reuse terms not verified
+    download_method: http
+    download_params:
+      url: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE103nnn/GSE103584/suppl/GSE103584_R01_NSCLC_RNAseq.txt.gz
+    priority: 1
+    notes: >
+      Processed expression and GEO sample annotations only, not raw reads. Join R01 sample
+      titles to NSCLC-Radiogenomics patient IDs; GSM accessions are assay sample IDs.
+      Reproduce with python -m medlake.expand_research. Outcome origin needs verification.
+    verified: 2026-10-15
+
+  - dataset_id: gse20685
+    dataset_name: GSE20685 breast cancer expression cohort
+    canonical_url: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE20685
+    id_namespace: GEO_GSE20685
+    domain: breast cancer survival
+    body_part: [breast]
+    modality: [RNA, clinical]
+    image_format: []
+    has: [genomics, phenotype]
+    access_level: open
+    license: GEO public access; submitter-specific reuse terms not verified
+    download_method: http
+    download_params:
+      url: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE20nnn/GSE20685/matrix/GSE20685_series_matrix.txt.gz
+    priority: 1
+    notes: >
+      Processed GPL570 expression plus submitted annotations. No CEL files or WSI downloaded.
+      External cross-cancer candidate; endpoint, clinical baseline and patient independence
+      require audit before protocol freeze. Reproduce with python -m medlake.expand_research.
+    verified: 2026-10-15
+
+  - dataset_id: gse13507
+    dataset_name: GSE13507 bladder cancer expression and clinical workbook
+    canonical_url: https://www.ncbi.nlm.nih.gov/geo/query/acc.cgi?acc=GSE13507
+    id_namespace: GEO_GSE13507
+    domain: bladder cancer survival
+    body_part: [bladder]
+    modality: [RNA, clinical]
+    image_format: []
+    has: [genomics, phenotype]
+    access_level: open
+    license: GEO public access; submitter-specific reuse terms not verified
+    download_method: http
+    download_params:
+      url: https://ftp.ncbi.nlm.nih.gov/geo/series/GSE13nnn/GSE13507/matrix/GSE13507_series_matrix.txt.gz
+    priority: 1
+    notes: >
+      Processed GPL6102 expression, platform annotation and clinical workbook. Not all samples
+      are primary human tumours; normal, surrounding, recurrent and annotation-conflict records must be
+      excluded from the primary cohort. Author classifier columns are excluded from predictors.
+      Reproduce with python -m medlake.expand_research.
+    verified: 2026-10-15
+
+  - dataset_id: tcga-brca
+    dataset_name: TCGA-BRCA clinical records and RNA inventory
+    canonical_url: https://portal.gdc.cancer.gov/projects/TCGA-BRCA
+    id_namespace: TCGA
+    domain: breast cancer
+    body_part: [breast]
+    modality: [clinical]
+    image_format: []
+    has: [diagnosis, phenotype]
+    access_level: open
+    license: GDC open-access data; subject to GDC data access policies
+    download_method: gdc
+    download_params: {gdc_project: TCGA-BRCA}
+    priority: 1
+    notes: >
+      Local scope is clinical records and open STAR-Counts file inventory only.
+      RNA expression and WSI have NOT been downloaded. Partial status is intentional.
+      Reproduce with python -m medlake.expand_research.
+    verified: 2026-10-15
+
+  - dataset_id: tcga-blca
+    dataset_name: TCGA-BLCA clinical records and RNA inventory
+    canonical_url: https://portal.gdc.cancer.gov/projects/TCGA-BLCA
+    id_namespace: TCGA
+    domain: bladder cancer
+    body_part: [bladder]
+    modality: [clinical]
+    image_format: []
+    has: [diagnosis, phenotype]
+    access_level: open
+    license: GDC open-access data; subject to GDC data access policies
+    download_method: gdc
+    download_params: {gdc_project: TCGA-BLCA}
+    priority: 1
+    notes: >
+      Clinical records and open STAR-Counts file inventory only. RNA expression and WSI
+      have NOT been downloaded. NMIBC versus MIBC populations need separate eligibility.
+      Reproduce with python -m medlake.expand_research.
+    verified: 2026-10-15
+
+  - dataset_id: tcga-ucec
+    dataset_name: TCGA-UCEC clinical records and RNA inventory
+    canonical_url: https://portal.gdc.cancer.gov/projects/TCGA-UCEC
+    id_namespace: TCGA
+    domain: endometrial cancer
+    body_part: [uterus]
+    modality: [clinical]
+    image_format: []
+    has: [diagnosis, phenotype]
+    access_level: open
+    license: GDC open-access data; subject to GDC data access policies
+    download_method: gdc
+    download_params: {gdc_project: TCGA-UCEC}
+    priority: 2
+    notes: >
+      Clinical records and open STAR-Counts file inventory only; no expression or WSI.
+      Check FIGO stage and grade instead of assuming AJCC fields define the full baseline.
+      Reproduce with python -m medlake.expand_research.
+    verified: 2026-10-15
+
+  # -------------------------------------- Other-domain expansion 2026-10-16
+  - dataset_id: ptb-xl
+    dataset_name: PTB-XL ECG, statements and clinical metadata
+    version: "1.0.3"
+    canonical_url: https://physionet.org/content/ptb-xl/1.0.3/
+    paper_doi: 10.1038/s41597-020-0495-6
+    id_namespace: PTBXL
+    domain: cardiology
+    body_part: [heart]
+    modality: [ECG, report, clinical]
+    image_format: [WFDB]
+    num_patients: 18869
+    num_studies: 21799
+    has: [diagnosis, report, phenotype]
+    diagnosis_system: [SCP-ECG]
+    access_level: open
+    license: CC BY 4.0
+    download_method: physionet
+    download_params: {slug: ptb-xl, version: "1.0.3", mode: files}
+    priority: 1
+    notes: >
+      Actual v1.0.3 counts: 21,799 ECG records / 18,869 source patients. Full metadata and
+      statements local; only 40 deterministic 100-Hz waveform examples, not the full signal
+      corpus. Official folds group patients. Values age=300 must not be treated as real age.
+      Report validation/automatic-generation flags remain in records.parquet.
+    verified: 2026-10-16
+
+  - dataset_id: ptb-xl-plus
+    dataset_name: PTB-XL+ measurement algorithms and automatic statements
+    version: "1.0.1"
+    canonical_url: https://physionet.org/content/ptb-xl-plus/1.0.1/
+    paper_doi: 10.1038/s41597-023-02153-8
+    id_namespace: PTBXL
+    domain: ECG measurement reliability
+    body_part: [heart]
+    modality: [ECG_features, clinical]
+    has: [phenotype, diagnosis]
+    access_level: open
+    license: CC BY 4.0
+    download_method: physionet
+    download_params: {slug: ptb-xl-plus, version: "1.0.1", mode: files}
+    priority: 1
+    notes: >
+      Three full feature tables (12SL, Uni-G, ECGDeli), feature dictionary and statement
+      mappings local and official SHA256 verified. Uni-G lacks four ECG records. Same
+      patients as PTB-XL, not an independent cohort. Median beats/fiducial points not fetched.
+    verified: 2026-10-16
+
+  - dataset_id: isles-2022
+    dataset_name: ISLES 2022 stroke MRI and expert lesion masks
+    version: "2.3.1; ADC/DWI community mirror subset"
+    canonical_url: https://zenodo.org/records/7960856
+    paper_doi: 10.1038/s41597-022-01875-5
+    id_namespace: ISLES22
+    domain: ischemic stroke segmentation
+    body_part: [brain]
+    modality: [MR, SEG]
+    image_format: [NIfTI]
+    num_patients: 250
+    has: [segmentation]
+    access_level: open
+    license: CC BY 4.0
+    download_method: huggingface
+    download_params:
+      repo: MedOtter/isles2022
+      revision: 52e0ebc98cac6f32513c885d54b3b2428df0a70d
+      allow_patterns: ["ISLES/dataset/*", "train.jsonl", "README.md"]
+    priority: 1
+    notes: >
+      All 250 ADC/DWI/mask triplets local via community mirror (750 NIfTI files); official
+      center table local from Zenodo. FLAIR and full original ZIP incomplete. Ten small
+      sform-header discrepancies retained for review; no automatic resampling.
+      No clinical functional outcome in ISLES22. Replay manifests/plans/isles_mirror_2026-10-16.json.
+    verified: 2026-10-16
+
+  - dataset_id: isles-2024-clinical
+    dataset_name: ISLES 2024 baseline and longitudinal clinical outcomes
+    canonical_url: https://zenodo.org/records/17652035
+    paper_doi: 10.1148/ryai.250603
+    id_namespace: ISLES24
+    domain: stroke functional outcome
+    body_part: [brain]
+    modality: [clinical]
+    num_patients: 149
+    has: [phenotype, lab]
+    access_level: open
+    license: CC BY-NC-SA 4.0
+    download_method: huggingface
+    download_params:
+      repo: MedOtter/isles2024
+      revision: 2038a6907e8c2593de739114ee26b32d99cb9b9b
+      allow_patterns: ["phenotype/*", "README.md"]
+    priority: 1
+    notes: >
+      149 baseline and 149 outcome tables local; 129 nonmissing 3-month mRS. No 99-GB
+      imaging archive or hidden test data fetched. Exact duplicate rows in two source
+      files for one case are recorded and collapsed only in derived tables.
+      ISLES22 and ISLES24 identifiers must not be joined by similar numbers.
+    verified: 2026-10-16
+
+  - dataset_id: kvasir-seg
+    dataset_name: Kvasir-SEG endoscopy images and expert polyp masks
+    canonical_url: https://datasets.simula.no/kvasir-seg/
+    paper_doi: 10.1007/978-3-030-37734-2_37
+    id_namespace: KVASIR
+    domain: gastrointestinal endoscopy
+    body_part: [colon]
+    modality: [endoscopy, SEG]
+    image_format: [JPEG]
+    num_images: 1000
+    size_bytes: 46227172
+    has: [segmentation, bbox]
+    access_level: open
+    license: Research and education only; commercial use requires written permission; citation required
+    download_method: http
+    download_params: {url: "https://datasets.simula.no/downloads/kvasir-seg.zip"}
+    priority: 1
+    notes: >
+      Complete original ZIP retained and CRC checked; 1,000 decoded image/mask pairs with
+      matching dimensions. Patient/video identifiers and physical pixel spacing absent.
+      Masks are source JPEGs, not guaranteed strictly binary pixel values. No patient-level
+      independence or millimeter polyp measurements may be inferred from these files alone.
+    verified: 2026-10-16
+
+  - dataset_id: iu-xray
+    dataset_name: Indiana University OpenI chest radiographs and reports
+    canonical_url: https://openi.nlm.nih.gov/
+    id_namespace: IU_OPENI
+    domain: radiology report evidence
+    body_part: [chest]
+    modality: [XR, report]
+    image_format: [PNG, XML]
+    num_studies: 3955
+    num_images: 7470
+    has: [report]
+    access_level: open
+    license: CC BY-NC-ND 4.0 (per source XML)
+    download_method: http
+    download_params: {url: "https://openi.nlm.nih.gov/imgs/collections/NLMCXR_reports.tgz"}
+    priority: 2
+    notes: >
+      All 3,955 XML reports local; 7,470 image references; 128 source-served 512-pixel
+      preview images covering 67 reports local. Full-resolution PNG archive incomplete.
+      Report IDs are not patient IDs, so reports were not used to invent patient records.
+    verified: 2026-10-16
+
+  - dataset_id: ispy2
+    dataset_name: I-SPY2 Imaging Cohort 1 clinical response records
+    canonical_url: https://www.cancerimagingarchive.net/collection/ispy2/
+    paper_doi: 10.7937/TCIA.D8Z0-9T85
+    id_namespace: ISPY2
+    domain: breast cancer neoadjuvant response
+    body_part: [breast]
+    modality: [MR, clinical]
+    image_format: [DICOM]
+    num_patients: 985
+    has: [phenotype, diagnosis]
+    access_level: open
+    license: CC BY 4.0
+    download_method: manual
+    priority: 1
+    notes: >
+      Clinical 985-case table and IDC image index copied from existing IDC v24 cache into
+      the workspace, not newly downloaded MRI. Includes 719 ISPY2 imaging cases plus
+      266 mapped ACRIN-6698 cases. Raw ACRIN clinical/index contains 385 cases, not 385
+      additional cohort-1 patients. Two cross-table pCR conflicts retained for adjudication.
+      Crosswalk is data/metadata/ispy2/acrin_ispy2_research_id_crosswalk.csv.
+    verified: 2026-10-16
+
+  - dataset_id: chimera-task3
+    dataset_name: CHIMERA v2 bladder cancer clinical, RNA and paired WSI feature inventory
+    version: "v2"
+    canonical_url: https://chimera.grand-challenge.org/task-3-bladder-cancer-recurrence-prediction/
+    id_namespace: CHIMERA_BLADDER
+    domain: high-risk NMIBC progression after BCG
+    body_part: [bladder]
+    modality: [clinical, RNA, WSI_features]
+    num_patients: 176
+    has: [genomics, phenotype, pathology]
+    access_level: open
+    license: CC BY-NC-SA; official site also states a publication embargo pending challenge and baseline journal papers
+    download_method: manual
+    download_params: {s3_prefix: "s3://chimera-challenge/v2/task3/"}
+    priority: 1
+    notes: >
+      All 176 clinical/RNA pairs and QC downloaded: 126 cohort A and 50 cohort B, 19,359
+      shared genes, 64 source progression events. All 176 WSI feature tensors indexed
+      (123.48 GB) but NOT downloaded, nor original slides. RNA source is DESeq2 processed;
+      exact transformation needs verification. BRS is RNA-derived; total BCG instillations
+      may be post-baseline. Endpoint fields indicate progression despite recurrence in title.
+      No hidden validation/test data or publication attempted.
+    verified: 2026-10-16

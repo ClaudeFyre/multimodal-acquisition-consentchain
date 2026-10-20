@@ -1,0 +1,73 @@
+\documentclass[journal,twoside,web]{IEEEtran}
+% A2 manuscript SKELETON (2026-10-18). No experimental results yet.
+% Blue [BLOCKCHAIN] boxes = reserved for the chain experiments (not run on the main machine).
+% Red [TODO] = ML-side work that can be done locally (see experiments/a2_consent_unlearning/README.md).
+\usepackage{cite}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\newcommand{\todo}[1]{\textcolor{red}{[TODO: #1]}}
+\newcommand{\chain}[1]{\par\noindent\fcolorbox{blue}{blue!5}{\parbox{0.95\columnwidth}{\small\textcolor{blue}{[BLOCKCHAIN] #1}}}\par}
+
+\begin{document}
+
+\title{ConsentChain: A Blockchain-Anchored Provenance and Consent Ledger with Verifiable Unlearning for Multimodal Medical Models}
+\author{\todo{Authors}}
+\maketitle
+
+\begin{abstract}
+Multimodal models for precision and preventive healthcare are trained on imaging, pathology, omics and clinical records drawn from many institutions, each governed by its own license and patient consent terms. Once data enter a training pipeline, institutions can rarely show which samples a model was trained on, whether their licenses permitted that use, or whether a patient's withdrawn consent was honored in the deployed model. We present ConsentChain, which links data governance to model training through a narrow ledger interface. Each training sample is registered off-chain with its source, license and pseudonymous patient key; only salted hash commitments, shard Merkle roots and model hashes are anchored on the ledger. Training follows a sharded, isolated scheme, so that a consent revocation triggers exact unlearning by retraining only the affected shard and publishes an unlearning receipt linking the revocation, the old and new shard roots and the new model hash. We instantiate the framework on 1,313 lung cancer patients from TCGA and CPTAC with simulated revocations. \todo{Results: unlearning cost vs.\ full retraining ($X\times$), task performance change ($\le Y$), membership-inference AUC on revoked samples ($Z$).} \chain{Ledger overhead on a permissioned blockchain vs.\ a centralized hash-chained log: latency $W$\,s per event, throughput, tamper resistance.}
+\end{abstract}
+
+\begin{IEEEkeywords}
+Data provenance, patient consent, machine unlearning, blockchain, multimodal learning, trustworthy AI.
+\end{IEEEkeywords}
+
+\section{Introduction}
+\todo{Motivation: multi-institution medical AI; licenses and consent; right to erasure (GDPR Art.\ 17, PIPL); gap between data governance and trained models.}
+\todo{Contributions: (1) governance-to-training interface; (2) exact unlearning with receipts; (3) evaluation on a multimodal survival task; (4) comparison of ledger backends.}
+
+\section{Related Work}
+\todo{Machine unlearning (SISA and successors); data provenance in ML; consent management.}
+\chain{Blockchain for health data sharing and audit; positioning against centralized signed logs.}
+
+\section{Threat Model and Requirements}
+\todo{Parties: data providers (hospitals), model trainer, auditor, patients. What each may misreport.}
+\chain{Trust assumptions that justify a permissioned ledger: mutually distrusting organizations, no single administrator able to rewrite history. State explicitly when a centralized log suffices.}
+
+\section{Method}
+\subsection{Off-Chain Sample Registry and Commitments}
+Each sample record (pseudonymous patient key, dataset, license, modalities, source file hash) is committed as $c = \mathrm{SHA256}(s \,\|\, \mathrm{canon}(\text{record}))$ with a 256-bit random salt $s$ kept off-chain. Revocation destroys $s$, making $c$ unlinkable. Implementation: \texttt{records.py}.
+
+\subsection{Ledger Interface}
+Five event types (\texttt{REGISTER\_SAMPLE}, \texttt{SET\_CONSENT}, \texttt{ANCHOR\_MODEL}, \texttt{UNLEARNING\_RECEIPT}, \texttt{LICENSE\_AUDIT}); personal identifiers, salts and features are rejected at the interface. Two backends: a local hash-chained log (centralized baseline) and a permissioned blockchain. Implementation: \texttt{ledger.py}.
+\chain{Chain design: platform (Hyperledger Fabric / EVM), organizations and endorsement policy, chaincode/contract mapping of the five events, block parameters.}
+
+\subsection{Sharded Training and Exact Unlearning}
+Samples are assigned to $S$ shards by commitment; each shard model sees only its own samples; shard membership is summarized by a Merkle root anchored with the model hash. A revocation retrains one shard and emits a receipt whose Merkle proofs show the sample was in the old root and is absent from the new one. Implementation: \texttt{sisa.py}.
+\todo{Shard model: B1 Cox survival model (main); small VLM + LoRA (extension). Aggregation rule.}
+
+\section{Experimental Setup}
+\todo{Cohort (1,313 NSCLC, TCGA+CPTAC; 3-year Uno C-index), simulated revocation schedules (1--20\%), shard counts, MIA protocol, license-violation injection. Frozen protocol before running.}
+\chain{Testbed: number of nodes/organizations, hardware, network; workload generator replaying the event log.}
+
+\section{Results}
+\subsection{Unlearning Cost and Task Performance}
+\todo{Shards vs.\ C-index vs.\ retraining time; comparison with full retraining.}
+\subsection{Verification of Forgetting}
+\todo{MIA on revoked vs.\ retained vs.\ never-seen samples; Merkle receipt checks.}
+\subsection{License Auditing}
+\todo{Detection of injected violations.}
+\subsection{Ledger Overhead and Tamper Resistance}
+\chain{Latency, throughput and storage per event; endorsement overhead; tamper experiment: single-administrator rewrite of the local log vs.\ the permissioned chain.}
+
+\section{Discussion and Limitations}
+Consent revocations are simulated because public-cohort patients cannot withdraw consent. The ledger certifies that the unlearning procedure was executed; the guarantee that the model is unaffected by the sample comes from exact shard retraining and is checked empirically by membership inference.
+\chain{When a blockchain is (not) warranted relative to a signed centralized log.}
+
+\section{Conclusion}
+\todo{}
+
+\end{document}
