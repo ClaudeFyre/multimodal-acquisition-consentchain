@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib.patches import FancyArrowPatch, FancyBboxPatch
+from scipy.interpolate import PchipInterpolator
 
 HERE = Path(__file__).resolve().parent
 EXP = HERE.parent.parent / "experiments"
@@ -175,13 +176,23 @@ def fig_static():
 
 
 # ---------- Fig 3: Q1 non-inferiority ----------
+def smooth(x, y, n=200):
+    """Shape-preserving (PCHIP) curve through the evaluated points: no overshoot, passes every point exactly."""
+    x, y = np.asarray(x, float), np.asarray(y, float)
+    xs = np.linspace(x.min(), x.max(), n)
+    return xs, PchipInterpolator(x, y)(xs)
+
+
 def fig_q1():
     fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.3), sharey=True)
     for ax, (v, (lab, col)) in zip(axes, VERS.items()):
         q = pd.DataFrame(res[v]["q1"])
         lo, hi = np.array([c[0] for c in q.ci]), np.array([c[1] for c in q.ci])
-        ax.fill_between(q.bR * 100, lo, hi, color=col, alpha=0.15, lw=0)
-        ax.plot(q.bR * 100, q.delta_vs_full, "-o", color=col, ms=4, mec="white", mew=0.6)
+        xs, lo_s = smooth(q.bR * 100, lo)
+        _, hi_s = smooth(q.bR * 100, hi)
+        ax.fill_between(xs, lo_s, hi_s, color=col, alpha=0.15, lw=0)
+        ax.plot(*smooth(q.bR * 100, q.delta_vs_full), "-", color=col)
+        ax.plot(q.bR * 100, q.delta_vs_full, "o", color=col, ms=4, mec="white", mew=0.6)
         ax.axhline(0, color=INK2, lw=0.8); ax.axhline(-0.01, color=INK2, lw=0.8, ls="--")
         ax.text(2, -0.0115, "non-inferiority margin $-\\delta$", fontsize=6.5, color=INK2, va="top")
         b = res[v]["b_star"]
@@ -230,11 +241,18 @@ def fig_voi():
     fig, axes = plt.subplots(1, 2, figsize=(7.0, 2.3))
     for ax, (v, (lab, col)) in zip(axes, VERS.items()):
         g = grid[v][grid[v].bW == 1.0].sort_values("bR")
-        ax.plot(g.bR * 100, g.C_oracle, "--", color=AQUA, lw=1.2, label="risk-change oracle (diagnostic)")
-        ax.plot(g.bR * 100, g.C_random, "-", color=GRAY, lw=1.5, label="random (mean of 100)")
-        ax.plot(g.bR * 100, g.C_voi, "-o", color=col, ms=3.5, mec="white", mew=0.6, label="VoI policy")
+        x = g.bR * 100
+        for y, c, ls, lw, ms, lab_ in [(g.C_oracle, AQUA, "--", 1.2, 2.6, "risk-change oracle (diagnostic)"),
+                                       (g.C_random, GRAY, "-", 1.5, 2.6, "random (mean of 100)"),
+                                       (g.C_voi, col, "-", 1.5, 3.5, "VoI policy")]:
+            ax.plot(*smooth(x, y), ls, color=c, lw=lw)
+            ax.plot(x, y, "o", color=c, ms=ms, mec="white", mew=0.5)
+            ax.plot([], [], ls, marker="o", color=INK2 if lab_ == "VoI policy" else c, lw=lw, ms=ms, mec="white", mew=0.5,
+                    label="VoI policy (blue / orange)" if lab_ == "VoI policy" else lab_)
         ax.set_title(lab, fontsize=8, color=INK); ax.set_xlabel("RNA-seq budget $b_R$ (% of patients; WSI for all)")
-    axes[0].set_ylabel("3-year Uno C-index"); axes[0].legend(fontsize=6.5, loc="lower right")
+    axes[0].set_ylabel("3-year Uno C-index")
+    h, l = axes[0].get_legend_handles_labels()
+    fig.legend(h, l, fontsize=6.5, loc="upper center", ncol=3, bbox_to_anchor=(0.5, -0.02))
     save(fig, "fig5_voi_vs_random")
 
 

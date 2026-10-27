@@ -1,5 +1,9 @@
 # 研究总索引：实验 → 论文
 
+## 2026-10-27 新增：TBME 数字孪生专题可行性
+
+独立于下方 B1/A2，新增 `papers/tbme_digital_twin/` 和 `experiments/tbme_twin_feasibility/`。已提取 3,163 次公开扫描的 SER 派生 FTV，形成 692 人候选纵向队列；544 人完成按中心分组的开发性基线，两个中心 148 人预留未评分。原候选可靠性评分与既有预测剖面投影等价，不作为新算法。机制数字孪生和不确定性正式验证尚未完成，当前稿件不可直接投稿。详情见 [本轮进展报告](../papers/tbme_digital_twin/PROGRESS_REPORT_2026-10-27.md)。下方旧索引保留原两篇论文的范围与状态。
+
 更新于 2026-10-18。只覆盖肺癌预后主线和 B1 / A2 两篇论文；数据湖本身见根目录 `README.md`，其他研究路线见 `RESEARCH_ROUTES_2026-10-15.md`。
 
 ## 两篇论文（相互独立）
@@ -9,7 +13,7 @@
 | 题目 | Stage Before Sequencing: Cost-Aware Sequential Modality Acquisition for Multimodal Survival Prediction in NSCLC | ConsentChain: Blockchain-Anchored Provenance and Consent Ledger with Verifiable Unlearning |
 | 征稿方向 | AI-Driven Multimodal Intelligence for Sustainable Healthcare Systems | Blockchain and MLLMs for Precision and Preventive Healthcare |
 | 目标期刊 | 原拟 IEEE JBHI；2025版中科院大类医学 **2区**。2026-10-20二区优先规划：CMPB/BMC Medical Research Methodology，详见下方投稿规划 | 待定；完整实验后评估 JBHI/JBI |
-| 论文目录 | `papers/b1_jbhi/`（初稿 6 页，含 6 图 1 表） | `papers/a2_consentchain/`（骨架，2 页） |
+| 论文目录 | `papers/b1_jbhi/`（v2 精细稿 9 页，7 图 5 表，含架构图；区块链内容高亮；Overleaf 包 `b1_jbhi_overleaf_2026-10-20.zip`；v1 存于 `archive/`） | `papers/a2_consentchain/`（骨架，2 页） |
 | 实验目录 | `experiments/b1_cost_acquisition/` | `experiments/a2_consent_unlearning/` |
 | 状态 | 实验完成；初稿完成；待核对作者、单位、参考文献卷期、汇率 | 接口骨架和冒烟测试完成；ML 实验未开始；**区块链部分不在本机做，接口已留** |
 | 摘要草稿 | `docs/B1_JBHI_title_abstract_draft_2026-10-08.md` | `docs/A2_title_abstract_draft_2026-10-08.md` |
@@ -43,7 +47,7 @@ lung_missingness/prepared      1,313 例 TCGA+CPTAC NSCLC：临床、WSI（TITAN
 
 | 位置 | 文件 | 说明 |
 |---|---|---|
-| 账本后端 | `experiments/a2_consent_unlearning/ledger.py` → `BlockchainLedger` | 实现 `append / events / verify` 三个方法即可接入；事件和字段约定见同目录 README |
+| 账本后端 | `experiments/chain_interface/ledger.py` → `BlockchainLedger`（2026-10-20 从 A2 目录移出，B1/A2 共用） | 实现 `append / events / verify` 三个方法即可接入；事件和字段约定见同目录 README |
 | 基线 | 同文件 `LocalHashChainLedger` | 本机哈希链日志，已实现，作为"中心化审计日志"对照 |
 | 论文 | `papers/a2_consentchain/main.tex` 中的蓝色 `[BLOCKCHAIN]` 框 | 链的选型、部署、开销与防篡改实验共 7 处；红色 `[TODO]` 为本机可做的 ML 部分（12 处） |
 
@@ -52,3 +56,7 @@ lung_missingness/prepared      1,313 例 TCGA+CPTAC NSCLC：临床、WSI（TITAN
 - 运行环境：`experiments\.venv`；GPU 常被其他实验占用，CPU 任务设 `CUDA_VISIBLE_DEVICES=-1` 并限制线程数，不抢占 GPU。
 - 新实验先写协议，用 SHA-256 冻结后再运行；偏离写 `DEVIATIONS.md`，不改协议原文。
 - 临床基线必须包含分期；C-index 用 `sksurv.concordance_index_ipcw`（标准 Uno）。
+
+## 代码仓库（2026-10-20）
+
+私有仓库 `ClaudeFyre/multimodal-acquisition-consentchain`，内容由 `tools/export_github_b1_a2.py` 按白名单导出到 `dist/multimodal-acquisition-consentchain/`（不含数据和患者级文件）。区块链接口统一在 `experiments/chain_interface/`（B1 的 `anchor_results.py` 与 A2 共用）。

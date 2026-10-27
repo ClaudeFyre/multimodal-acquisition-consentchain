@@ -267,7 +267,7 @@ $b_R$ & With stage & Without stage \\
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.85\textwidth]{fig3_noninferiority.pdf}
-\caption{Q1. Difference in 3-year C-index between the VoI policy at RNA budget $b_R$ (WSI for all) and RNA sequencing for all, with 95\% paired-bootstrap CI. Dashed: margin $-\delta = -0.01$. Dotted: $b_R^*$. No budget shows a detectable loss; $b_R^*$ is driven by interval width.}
+\caption{Q1. Difference in 3-year C-index between the VoI policy at RNA budget $b_R$ (WSI for all) and RNA sequencing for all, with 95\% paired-bootstrap CI. Dashed: margin $-\delta = -0.01$. Dotted: $b_R^*$. No budget shows a detectable loss; $b_R^*$ is driven by interval width. Markers are the evaluated budgets; curves and band are shape-preserving (PCHIP) interpolation between them.}
 \label{fig:ni}
 \end{figure*}
 
@@ -277,7 +277,7 @@ The VoI regressors predicted the realized risk change only weakly: test-set Spea
 \begin{figure*}[t]
 \centering
 \includegraphics[width=0.85\textwidth]{fig5_voi_vs_random.pdf}
-\caption{Q2. 3-year C-index of VoI, random (mean of 100 draws) and risk-change-oracle selection versus RNA budget, with WSI acquired for all patients. The oracle ranks patients by their true risk change and is a diagnostic reference, not an upper bound.}
+\caption{Q2. 3-year C-index of VoI, random (mean of 100 draws) and risk-change-oracle selection versus RNA budget, with WSI acquired for all patients. The oracle ranks patients by their true risk change and is a diagnostic reference, not an upper bound. Markers are the evaluated budgets; curves are shape-preserving (PCHIP) interpolation between them.}
 \label{fig:voi}
 \end{figure*}
 
