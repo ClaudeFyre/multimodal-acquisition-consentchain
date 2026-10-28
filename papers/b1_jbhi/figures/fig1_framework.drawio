@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mxfile host="app.diagrams.net" type="device">
+  <diagram id="b1-framework" name="Acquisition ladder">
+    <mxGraphModel dx="1100" dy="400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1040" pageHeight="330" math="0" shadow="0" background="#ffffff">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- Level boxes -->
+        <mxCell id="lvl0" value="&lt;b&gt;Level 0&lt;/b&gt;&lt;br&gt;Clinicopathologic&lt;br&gt;(incl. pathologic stage)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#f4f3f0;strokeColor=#52514e;strokeWidth=1.2;fontFamily=Times New Roman;fontSize=15;fontColor=#0b0b0b;verticalAlign=top;spacingTop=18;" vertex="1" parent="1">
+          <mxGeometry x="20" y="40" width="260" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="lvl1" value="&lt;b&gt;Level 1&lt;/b&gt;&lt;br&gt;+ H&amp;amp;E WSI&lt;br&gt;(slide embedding)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#f4f3f0;strokeColor=#52514e;strokeWidth=1.2;fontFamily=Times New Roman;fontSize=15;fontColor=#0b0b0b;verticalAlign=top;spacingTop=18;" vertex="1" parent="1">
+          <mxGeometry x="360" y="40" width="260" height="145" as="geometry" />
+        </mxCell>
+        <mxCell id="lvl2" value="&lt;b&gt;Level 2&lt;/b&gt;&lt;br&gt;+ RNA-seq&lt;br&gt;(transcriptome)" style="rounded=1;whiteSpace=wrap;html=1;arcSize=8;fillColor=#f4f3f0;strokeColor=#52514e;strokeWidth=1.2;fontFamily=Times New Roman;fontSize=15;fontColor=#0b0b0b;verticalAlign=top;spacingTop=18;" vertex="1" parent="1">
+          <mxGeometry x="700" y="40" width="260" height="145" as="geometry" />
+        </mxCell>
+
+        <!-- Cost lines inside the boxes (separate cells so they can be edited / restyled) -->
+        <mxCell id="cost0" value="routine, $0" style="text;html=1;align=center;verticalAlign=middle;fontFamily=Times New Roman;fontSize=13;fontStyle=2;fontColor=#52514e;" vertex="1" parent="1">
+          <mxGeometry x="20" y="152" width="260" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="cost1" value="US$12–78 / patient" style="text;html=1;align=center;verticalAlign=middle;fontFamily=Times New Roman;fontSize=13;fontStyle=2;fontColor=#52514e;" vertex="1" parent="1">
+          <mxGeometry x="360" y="152" width="260" height="24" as="geometry" />
+        </mxCell>
+        <mxCell id="cost2" value="US$300–2,919 / patient" style="text;html=1;align=center;verticalAlign=middle;fontFamily=Times New Roman;fontSize=13;fontStyle=2;fontColor=#52514e;" vertex="1" parent="1">
+          <mxGeometry x="700" y="152" width="260" height="24" as="geometry" />
+        </mxCell>
+
+        <!-- Acquisition arrows -->
+        <mxCell id="arr01" style="endArrow=block;endFill=1;html=1;strokeColor=#2a78d6;strokeWidth=2.2;" edge="1" parent="1" source="lvl0" target="lvl1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="arr12" style="endArrow=block;endFill=1;html=1;strokeColor=#2a78d6;strokeWidth=2.2;" edge="1" parent="1" source="lvl1" target="lvl2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Arrow captions -->
+        <mxCell id="lab01" value="acquire WSI for top-&lt;i&gt;b&lt;/i&gt;&lt;sub&gt;W&lt;/sub&gt;&lt;br&gt;by predicted &lt;i&gt;d̂&lt;/i&gt;&lt;sub&gt;W&lt;/sub&gt;" style="text;html=1;align=center;verticalAlign=middle;fontFamily=Times New Roman;fontSize=13;fontColor=#52514e;" vertex="1" parent="1">
+          <mxGeometry x="220" y="200" width="200" height="50" as="geometry" />
+        </mxCell>
+        <mxCell id="lab12" value="acquire RNA for top-&lt;i&gt;b&lt;/i&gt;&lt;sub&gt;R&lt;/sub&gt;&lt;br&gt;by predicted &lt;i&gt;d̂&lt;/i&gt;&lt;sub&gt;R&lt;/sub&gt;" style="text;html=1;align=center;verticalAlign=middle;fontFamily=Times New Roman;fontSize=13;fontColor=#52514e;" vertex="1" parent="1">
+          <mxGeometry x="560" y="200" width="200" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Bottom note -->
+        <mxCell id="note" value="Each patient is scored by the model of the highest level acquired: 3-year risk 1 − &lt;i&gt;Ŝ&lt;/i&gt;(&lt;i&gt;τ&lt;/i&gt; | &lt;i&gt;x&lt;/i&gt;), &lt;i&gt;d̂&lt;/i&gt; = predicted change in risk (VoI proxy)" style="text;html=1;align=center;verticalAlign=middle;fontFamily=Times New Roman;fontSize=13;fontColor=#0b0b0b;" vertex="1" parent="1">
+          <mxGeometry x="20" y="272" width="940" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

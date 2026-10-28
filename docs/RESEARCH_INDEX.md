@@ -1,8 +1,14 @@
 # 研究总索引：实验 → 论文
 
+## 2026-10-27 新增：3D CT 定量/定位真值（ct_quant，第 1 阶段）
+
+独立方向：3D CT 视觉-语言模型是否真的“量得准、找得对”。`experiments/ct_quant/` 从本地分割标注生成测量真值（TotalSegmentator-CT 1,228 例、LIDC 多阅片者结节、7 个病灶 SEG 数据集）和带“可判定性”标注的问题（`cache/ct_quant/questions.parquet`，版本 q-v1）。仅用 CPU、不联网。CT-RATE 改为只下有尺寸问答的 505 例（≈84 GB，分两批，需 HF_TOKEN）。3060 下载工具包：`dist/medlake_3060_kit.zip`（`python tools/build_kit.py` 重新生成）。详见 [ct_quant README](../experiments/ct_quant/README.md)。
+
 ## 2026-10-27 新增：TBME 数字孪生专题可行性
 
-独立于下方 B1/A2，新增 `papers/tbme_digital_twin/` 和 `experiments/tbme_twin_feasibility/`。已提取 3,163 次公开扫描的 SER 派生 FTV，形成 692 人候选纵向队列；544 人完成按中心分组的开发性基线，两个中心 148 人预留未评分。原候选可靠性评分与既有预测剖面投影等价，不作为新算法。机制数字孪生和不确定性正式验证尚未完成，当前稿件不可直接投稿。详情见 [本轮进展报告](../papers/tbme_digital_twin/PROGRESS_REPORT_2026-10-27.md)。下方旧索引保留原两篇论文的范围与状态。
+2026-10-28 补充：固定五例完整原始裁剪 DCE、SER 与掩膜已取得并打包，依据官方对象内嵌编码复算 FTV_PE，保留边界/阈值歧义。可交影像专科审阅，意见仍为空白；实际给药记录未取得。最终确认尚未冻结、预留未评分。见 [交接状态](../papers/tbme_digital_twin/DATA_COMPLETION_STATUS_2026-10-28.md)。
+
+独立于下方 B1/A2，新增 `papers/tbme_digital_twin/` 和 `experiments/tbme_twin_feasibility/`。692 人纵向队列中，544 人完成中心分组基线、不确定性 v1 与追加分位数对照 v2；两个中心 148 人预留未评分。原候选评分等价于已有预测剖面投影，不作为新算法。总体覆盖掩盖的体积条件问题可被既有分位数模型改善，目前没有新算法或机制孪生证据。像素掩膜核对和独立确认未完成，稿件不可直接投稿。详情见 [最新对照报告](../papers/tbme_digital_twin/QUANTILE_COMPARATOR_REPORT_2026-10-27.md) 与 [数据执行清单](../papers/tbme_digital_twin/DATA_AND_EXECUTION_PLAN_2026-10-27.md)。下方旧索引保留原两篇论文的范围与状态。
 
 更新于 2026-10-18。只覆盖肺癌预后主线和 B1 / A2 两篇论文；数据湖本身见根目录 `README.md`，其他研究路线见 `RESEARCH_ROUTES_2026-10-15.md`。
 
