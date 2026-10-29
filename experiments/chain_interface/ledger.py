@@ -9,8 +9,8 @@ Backends:
 - `LocalHashChainLedger`: append-only JSONL with SHA-256 hash chaining. Implements the same checks a smart
   contract would (authorized submitter + record schema). It is the *centralized audit log* baseline and lets
   the pipeline run end-to-end on one machine.
-- `BlockchainLedger`: 【区块链接口位置】 permissioned chain (Hyperledger Fabric chaincode / EVM contract).
-  Not implemented on this machine (decision 2026-10-08).
+- `BlockchainLedger`: B1 ANALYSIS_RECORD backend for an EVM registry, including Ethereum Sepolia.
+  A2 consent/unlearning event types remain outside this backend's implemented scope.
 
 Rule: payloads carry only hashes, commitments, Merkle roots, model versions, public license ids and short
 aggregate conclusions. Patient identifiers, salts, feature values never reach `append`.
@@ -169,27 +169,59 @@ class LocalHashChainLedger(Ledger):
 
 
 class BlockchainLedger(Ledger):
-    """【区块链接口位置】 Permissioned-chain backend. Not implemented on this machine.
+    """B1 EVM backend with recoverable on-chain aggregate fields and immutable evidence hashes.
 
-    Mapping to implement (see experiments/chain_interface/README.md):
-      append(event) -> check_submitter + event.validate() locally, then submit a transaction to contract
-                       function `<event.kind>(payload)` signed by `event.org`; wait for confirmation and
-                       return Receipt(tx hash, block number, previous block hash, status, submitter, contract
-                       address, submitted_at, confirmed_at, gas_used).
-      events(kind)  -> read contract events / world state filtered by kind, ordered by (block, tx index).
-      verify()      -> validate the block hash chain and endorsement policy over the full history.
-    `benchmark.py` then reports gas per transaction, TPS and confirmation latency for this backend versus
-    LocalHashChainLedger over the same fixed measurement window.
+    event.org is a logical pipeline label checked locally; Receipt.submitter is the actual signer.
+    verify() checks RPC receipt/block linkage and contract digests. Consensus validation is delegated
+    to the selected node, and this method does not establish permissioned-chain endorsement or finality.
+    Repeated append of identical immutable content returns its existing receipt without another write.
     """
 
-    def __init__(self, *args, **kwargs):
-        raise NotImplementedError("Blockchain backend is reserved for the chain experiments (not run on this machine).")
+    def __init__(self, rpc_url=None, contract_address=None, chain_id=11155111,
+                 deployment_block=None, sender=None, authorized_orgs=None, node_executable="node"):
+        super().__init__(authorized_orgs)
+        self.evm = Path(__file__).resolve().parent / "evm"
+        config = json.loads((self.evm / "config/sepolia.json").read_text())
+        state_path = self.evm / "results/sepolia_deployment.json"
+        state = json.loads(state_path.read_text()) if state_path.exists() else {}
+        address = contract_address or state.get("contractAddress")
+        if not address:
+            raise ValueError("Deploy the registry first or pass contract_address")
+        if deployment_block is None:
+            deployment_block = next((t["blockNumber"] for t in state.get("transactions", [])
+                                     if t.get("label") == "deployment" and t.get("status") == 1), 0)
+        self.node_executable = node_executable
+        self.options = {"rpc_url": rpc_url or config["rpcUrl"], "chain_id": chain_id,
+                        "contract_address": address, "deployment_block": deployment_block,
+                        "sender": sender, "logical_org": "b1-analysis"}
+        self.reused_receipts = 0
 
-    def append(self, event):  # pragma: no cover
-        raise NotImplementedError
+    def _call(self, action, **kwargs):
+        import subprocess
+        request = {**self.options, "action": action, **kwargs}
+        run = subprocess.run([self.node_executable, str(self.evm / "scripts/ledger_bridge.mjs")],
+                             input=json.dumps(request), text=True, capture_output=True, timeout=240)
+        if run.returncode:
+            raise RuntimeError(run.stderr.strip() or "EVM bridge failed")
+        return json.loads(run.stdout)
 
-    def events(self, kind=None):  # pragma: no cover
-        raise NotImplementedError
+    def append(self, event):
+        self.check_submitter(event)
+        event.validate()
+        if event.kind != ANALYSIS_RECORD:
+            raise NotImplementedError("The implemented EVM backend covers B1 ANALYSIS_RECORD only")
+        extra = set(event.payload) - EVENT_FIELDS[ANALYSIS_RECORD]
+        if extra:
+            raise ValueError(f"unexpected ANALYSIS_RECORD fields {sorted(extra)}")
+        result = self._call("append", event=asdict(event))
+        self.reused_receipts += int(result.get("reused", False))
+        return Receipt(**result["receipt"])
 
-    def verify(self):  # pragma: no cover
-        raise NotImplementedError
+    def events(self, kind=None):
+        if kind not in (None, ANALYSIS_RECORD):
+            return
+        for row in self._call("events"):
+            yield Receipt(**row["receipt"]), Event(**row["event"])
+
+    def verify(self):
+        return bool(self._call("verify")["valid"])

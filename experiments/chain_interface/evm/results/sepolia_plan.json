@@ -1,0 +1,22 @@
+{
+  "chainId": 11155111,
+  "address": "0x0f7d34D027D1D70B8bB283DD57F35710D52f99db",
+  "rpcUrl": "https://ethereum-sepolia-rpc.publicnode.com",
+  "balanceWei": "999974394797244",
+  "balanceSepoliaETH": "0.000999974394797244",
+  "suggestedMaxFeePerGasGwei": "0.00000133",
+  "maximumFeeCapGwei": "3",
+  "maximumExperimentGas": 40000000,
+  "maximumExperimentFeeWei": "100000000000000",
+  "maximumTransactionGas": 16000000,
+  "maximumRequiredBalanceWei": "200000000000000",
+  "maximumRequiredBalanceSepoliaETH": "0.0002",
+  "requiredBalanceAtQuotedFeesWei": "100053200000000",
+  "requiredBalanceAtQuotedFeesSepoliaETH": "0.0001000532",
+  "shortfallSepoliaETH": "0.0",
+  "addressExplorerURL": "https://sepolia.etherscan.io/address/0x0f7d34D027D1D70B8bB283DD57F35710D52f99db",
+  "deploymentReady": true,
+  "metadataFile": "config/metadata.json",
+  "walletStoredLocally": true,
+  "privateKeyIncludedInDeliverables": false
+}

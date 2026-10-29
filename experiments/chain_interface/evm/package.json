@@ -1,0 +1,17 @@
+{
+  "name": "model-evidence-registry-experiment",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prepare:evidence": "python3 scripts/prepare_evidence.py",
+    "benchmark": "node scripts/benchmark.mjs",
+    "sepolia:prepare": "node scripts/sepolia.mjs prepare",
+    "sepolia:status": "node scripts/sepolia.mjs status",
+    "sepolia:deploy": "node scripts/sepolia.mjs deploy",
+    "metadata:update": "node scripts/sepolia.mjs update-metadata"
+  },
+  "dependencies": {
+    "ethers": "6.17.0"
+  }
+}

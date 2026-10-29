@@ -1,0 +1,12 @@
+{
+  "source": "Original anchor_results.py --backend evm verification output after deployment",
+  "chain_valid": true,
+  "native_evidence_matches": true,
+  "identical_records_reused": 2,
+  "new_transactions": 0,
+  "latency_of_reused_receipts_is_not_a_timing_measurement": true,
+  "record_ids": [
+    "B1/B_stage_group/policy",
+    "B1/A_no_stage/policy"
+  ]
+}

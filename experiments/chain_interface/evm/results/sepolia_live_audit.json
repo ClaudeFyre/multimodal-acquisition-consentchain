@@ -1,0 +1,76 @@
+{
+  "schema": "b1-registry-live-sepolia-audit/v1",
+  "checkedAtUTC": "2026-10-22T05:18:42.273Z",
+  "allPassed": true,
+  "checks": {
+    "chainId": true,
+    "owner": true,
+    "deployedRuntimeMatchesCompiler": true,
+    "contractSourceMatches": true,
+    "allRecordedReceiptStatusesAndCosts": true,
+    "twoNativeRecordDigests": true,
+    "metadataRevisionHistory": true,
+    "totalCostsIncludeFailure": true,
+    "withinPublicExperimentLimits": true
+  },
+  "contractAddress": "0xF3A2732f7521ED01A0AeaB874F9b2E46aB6B0155",
+  "receipts": [
+    {
+      "txHash": "0x7aa04173a3c037b7bf93aea8dd029fa478329dc137d023cb7a589b3293b61a05",
+      "label": "deployment",
+      "status": 0,
+      "blockNumber": 11967375,
+      "gasUsed": "3000000",
+      "blockLinkVerified": true
+    },
+    {
+      "txHash": "0x2345f055963747aa642cbbfe4d7745d1046fafaa15c0a7448650f60d01d0b160",
+      "label": "deployment",
+      "status": 1,
+      "blockNumber": 11967396,
+      "gasUsed": "9986101",
+      "blockLinkVerified": true
+    },
+    {
+      "txHash": "0x9c561f584626e0c4648899d4fd46072703dcddb9dab4fd111ddcbdbb39af9b02",
+      "label": "anchor_B_stage_group",
+      "status": 1,
+      "blockNumber": 11967397,
+      "gasUsed": "3139469",
+      "blockLinkVerified": true
+    },
+    {
+      "txHash": "0x117a353a66feb4fcbb84bb8ae27bf9bf68e1876207a09d2df83e37da12cba6cd",
+      "label": "anchor_A_no_stage",
+      "status": 1,
+      "blockNumber": 11967398,
+      "gasUsed": "3139385",
+      "blockLinkVerified": true
+    },
+    {
+      "txHash": "0x9eda093e6f5bfafda4c6987e7a0542c524f7748f397220d587050c02b2836c0b",
+      "label": "metadata_revision_check",
+      "status": 1,
+      "blockNumber": 11967399,
+      "gasUsed": "191886",
+      "blockLinkVerified": true
+    }
+  ],
+  "records": [
+    {
+      "recordId": "0x369b87077341fe6ec1301d340d47aa66e093d84491e4a5571ee029b8f73ed43c",
+      "sourceRecordId": "B1/B_stage_group/policy",
+      "immutableAndMetadataDigestsVerified": true,
+      "metadataVersion": 2,
+      "dataName": "MODEL_RECORD_001"
+    },
+    {
+      "recordId": "0xd6ee7ee7b900cf5894dd17569191abff9e025348ece88720da4942d54982faa7",
+      "sourceRecordId": "B1/A_no_stage/policy",
+      "immutableAndMetadataDigestsVerified": true,
+      "metadataVersion": 1,
+      "dataName": "MODEL_RECORD_002"
+    }
+  ],
+  "scope": "Read-only RPC verification of runtime, owner, receipt/block linkage, costs, digests and metadata history; no consensus-security claim."
+}

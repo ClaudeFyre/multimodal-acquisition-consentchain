@@ -1,0 +1,12 @@
+{
+  "two_native_model_records": "results/native_adapter_test.json; evidence/analysis_*.json",
+  "contract_authorization_schema_digest_metadata": "test/ModelEvidenceRegistry.t.sol; results/forge_tests.json",
+  "native_evidence_commitment": "evidence/b1_commitment_preimage.json; evidence/b1_evidence_manifest.json",
+  "128_mutations_and_revision": "results/local_benchmark.json:functional",
+  "overhead_table": "results/local_benchmark.json:benchmarkRows; results/local_receipts.json",
+  "signed_log_checks": "results/central_*.jsonl; local_benchmark.json:benchmarkRows[].checks",
+  "public_network": "results/sepolia_deployment.json (claim only when status=confirmed_on_sepolia)",
+  "public_transaction_table": "results/sepolia_transaction_metrics.json; results/sepolia_metrics_rpc_snapshot.json; original client timing logs in sepolia_deployment.json; four successful operations only",
+  "unchanged_clinical_results": "original B1 frozen evidence bundle; no training repeated",
+  "not_evaluated": "consensus security, clinical improvement, trained weight integrity, A2 chain events"
+}

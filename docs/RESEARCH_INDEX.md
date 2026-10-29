@@ -66,3 +66,11 @@ lung_missingness/prepared      1,313 例 TCGA+CPTAC NSCLC：临床、WSI（TITAN
 ## 代码仓库（2026-10-20）
 
 私有仓库 `ClaudeFyre/multimodal-acquisition-consentchain`，内容由 `tools/export_github_b1_a2.py` 按白名单导出到 `dist/multimodal-acquisition-consentchain/`（不含数据和患者级文件）。区块链接口统一在 `experiments/chain_interface/`（B1 的 `anchor_results.py` 与 A2 共用）。
+
+## 2026-10-29：v3 稿件、评审与工程合并
+
+- v3 稿件（含 Sepolia 链实验）单独存放在 `papers/b1_jbhi_v3/`；`papers/b1_jbhi/` 仍是 v2，未改动。
+- v3 评审：`papers/b1_jbhi/review/REVIEW_v3_2026-10-29.md`（图 1 与正文矛盾、本地/Sepolia gas 差异、被删除的限定语、S01–S07 状态）。
+- Sepolia EVM 后端已合并到 `experiments/chain_interface/evm/`，`BlockchainLedger` 已实现（仅 B1）；合并记录见 `dist/multimodal-acquisition-consentchain/MERGE_NOTES.md`。
+- 链上证据哈希对应 LF 换行文件；本机原始结果为 CRLF，审计用仓库副本。
+- 匿名评审工程：`dist/anon-stage-before-sequencing/`（由 `tools/export_anonymous.py` 生成）。

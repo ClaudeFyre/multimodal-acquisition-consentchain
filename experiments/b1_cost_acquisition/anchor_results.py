@@ -18,7 +18,7 @@ from pathlib import Path
 HERE = Path(__file__).resolve().parent
 ROOT = HERE.parents[1]
 sys.path.insert(0, str(HERE.parent / "chain_interface"))
-from ledger import ANALYSIS_RECORD, Event, Ledger, LocalHashChainLedger  # noqa: E402
+from ledger import ANALYSIS_RECORD, Event, Ledger, LocalHashChainLedger, BlockchainLedger  # noqa: E402
 
 EVIDENCE = ["PROTOCOL_B1.md", "PROTOCOL_B1.freeze.json", "results/results.json",
             "results/grid_mean_B_stage_group.csv", "results/grid_mean_A_no_stage.csv", "REPORT_B1.md"]
@@ -74,7 +74,21 @@ def verify_against_evidence(ledger: Ledger) -> bool:
 
 
 if __name__ == "__main__":
-    path = Path(sys.argv[1]) if len(sys.argv) > 1 else HERE / "anchored" / "b1_ledger.jsonl"
-    led = LocalHashChainLedger(path, authorized_orgs={"b1-analysis"})
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("path", nargs="?", type=Path, default=HERE / "anchored" / "b1_ledger.jsonl")
+    parser.add_argument("--backend", choices=["local", "evm"], default="local")
+    parser.add_argument("--rpc-url")
+    parser.add_argument("--contract")
+    parser.add_argument("--chain-id", type=int, default=11155111)
+    parser.add_argument("--deployment-block", type=int)
+    parser.add_argument("--sender")
+    args = parser.parse_args()
+    led = (LocalHashChainLedger(args.path, authorized_orgs={"b1-analysis"}) if args.backend == "local"
+           else BlockchainLedger(rpc_url=args.rpc_url, contract_address=args.contract,
+                                 chain_id=args.chain_id, deployment_block=args.deployment_block,
+                                 sender=args.sender, authorized_orgs={"b1-analysis"}))
     print(json.dumps(anchor(led), indent=1))
     print("chain valid:", led.verify(), "| evidence matches:", verify_against_evidence(led))
+    if args.backend == "evm":
+        print("identical records reused without new transactions:", led.reused_receipts)

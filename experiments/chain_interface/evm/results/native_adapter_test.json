@@ -1,0 +1,39 @@
+{
+  "schema": "b1-native-ledger-adapter-test/v1",
+  "deployment": {
+    "contract_address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+    "deployment_block": 1,
+    "tx_hash": "0x602e238c68893a16c0a57108f41e3e20fef32671a921ab9891114ecfa1f088b8"
+  },
+  "checks": {
+    "two_native_records": true,
+    "ledger_verifies": true,
+    "native_evidence_matches": true,
+    "conclusions_match": true,
+    "actual_gas_receipts": true,
+    "identical_replay_reuses_two_receipts": true,
+    "forbidden_field_rejected_before_rpc": true,
+    "unauthorized_logical_org_rejected": true,
+    "different_content_same_record_id_rejected": true
+  },
+  "all_passed": true,
+  "receipts": [
+    {
+      "record_id": "B1/B_stage_group/policy",
+      "tx_id": "0x715f108cb4ab22279761bb71214af9f1206c10f200e21d7b84e5c67f21c7073a",
+      "index": 2,
+      "status": "confirmed",
+      "latency_s": 0.8569998741149902
+    },
+    {
+      "record_id": "B1/A_no_stage/policy",
+      "tx_id": "0xc18f5167fdfd6e3ee95dcdfef52f763b9a6748d3e021dbcf2c1aa9f0345a527b",
+      "index": 3,
+      "status": "confirmed",
+      "latency_s": 0.8550000190734863
+    }
+  ],
+  "evidence_hash": "50c74c7a39f4c8e1555a33ae5fa6ba369e1c9c96ead569105266f613907f0976",
+  "model_training_repeated": false,
+  "a2_consent_unlearning_tested": false
+}

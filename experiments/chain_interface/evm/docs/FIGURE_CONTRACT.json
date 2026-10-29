@@ -1,0 +1,17 @@
+{
+  "core_conclusion": "Immutable model evidence and revisable display metadata follow separate paths through the registry.",
+  "question": "Which model evidence is committed, what can be renamed, and how is the record verified?",
+  "archetype": "schematic-led composite",
+  "panels": 1,
+  "uncertainty": "not applicable to an architecture schematic",
+  "backend": "Python; consistent with supplied figure workflow",
+  "dimensions_mm": [
+    183,
+    54
+  ],
+  "editable_text": true,
+  "glyph_floor_pt": 5,
+  "source": "implemented B1 Ledger adapter and EVM contract",
+  "reuse_level": "build anew; model inputs and evidence route retained conceptually",
+  "multi_panel_alignment": "not applicable; one axes containing a single system diagram"
+}

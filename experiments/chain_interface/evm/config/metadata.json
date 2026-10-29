@@ -1,0 +1,14 @@
+{
+  "records": [
+    {
+      "key": "B_stage_group",
+      "dataName": "MODEL_RECORD_001",
+      "description": "Temporary display metadata; final name and description will be supplied by the author."
+    },
+    {
+      "key": "A_no_stage",
+      "dataName": "MODEL_RECORD_002",
+      "description": "Temporary display metadata; final name and description will be supplied by the author."
+    }
+  ]
+}

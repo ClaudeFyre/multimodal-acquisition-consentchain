@@ -1,0 +1,56 @@
+{
+  "protocolVersion": "1.1.0",
+  "purpose": "Anchor original B1 frozen result files through the existing Ledger interface, and measure registry correctness and overhead.",
+  "local": {
+    "chainId": 31337,
+    "blockTimeSeconds": 1,
+    "blockGasLimit": 30000000,
+    "hardfork": "shanghai",
+    "benchmarkReplicates": 3,
+    "recordsPerReplicate": 16,
+    "concurrentSubmissions": 4,
+    "receiptPollingMilliseconds": 100,
+    "payloadClasses": [
+      {
+        "name": "compact",
+        "nameBytes": 16,
+        "descriptionBytes": 64
+      },
+      {
+        "name": "extended",
+        "nameBytes": 128,
+        "descriptionBytes": 512
+      }
+    ]
+  },
+  "functional": {
+    "reportedModelRecords": 2,
+    "evidenceBitFlipTrials": 128,
+    "metadataRevisionTrials": 1,
+    "forgeFuzzRunsPerProperty": 256
+  },
+  "baseline": {
+    "type": "single-writer signed SHA-256 hash-chained JSONL log",
+    "fsyncEveryAppend": true,
+    "sameClientAndMachine": true,
+    "limitation": "Local log and EVM block inclusion have different trust and durability semantics."
+  },
+  "metrics": {
+    "gas": "receipt gasUsed; deployment and metadata revisions reported separately",
+    "latency": "client monotonic elapsed time from start of transaction submission to observing a one-confirmation receipt",
+    "throughput": "successful writes divided by wall-clock span from first submission start to final receipt observation per replicate",
+    "intervals": "descriptive median, p95, and replicate range; no independence claim across individual transactions"
+  },
+  "scope": {
+    "modelTrainingRepeated": false,
+    "reportedModelResultsSource": "original B1 results/results.json and six-file evidence bundle from the supplied project",
+    "syntheticLoadRecords": true,
+    "localConsensusSecurityEvaluated": false,
+    "sepoliaPerformanceMustBeMeasuredSeparately": true,
+    "confirmationIsFinality": false,
+    "b1LedgerEventType": "ANALYSIS_RECORD",
+    "a2ConsentUnlearningBackendImplemented": false,
+    "resultHashEncoding": "SHA-256 ABI encoding of sourceRecordId, conclusion, evidenceHash, evidenceURI, modelVersion, confidence",
+    "benchmarkEntryPoint": "anchorAnalysis(AnalysisInput)"
+  }
+}

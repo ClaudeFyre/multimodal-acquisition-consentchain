@@ -1,0 +1,53 @@
+{
+  "schema": "b1-registry-artifact-audit/v1",
+  "allPassed": true,
+  "checks": {
+    "protocolCommitment": true,
+    "sixNativeFiles": true,
+    "originalEvidenceAndAnalysis": true,
+    "contractTests": true,
+    "nativeAdapter": true,
+    "loadReceipts": true,
+    "functionalMutations": true,
+    "metadataImmutability": true,
+    "signedLogSignaturesAndCheckpoints": true,
+    "benchmarkAccounting": true,
+    "sepoliaSuccessfulReceipts": true,
+    "sepoliaTwoNativeRecords": true,
+    "sepoliaIntegrity": true
+  },
+  "logAudits": [
+    {
+      "file": "results/central_compact_0.jsonl",
+      "entries": 16,
+      "checkpointMatched": true
+    },
+    {
+      "file": "results/central_compact_1.jsonl",
+      "entries": 16,
+      "checkpointMatched": true
+    },
+    {
+      "file": "results/central_compact_2.jsonl",
+      "entries": 16,
+      "checkpointMatched": true
+    },
+    {
+      "file": "results/central_extended_0.jsonl",
+      "entries": 16,
+      "checkpointMatched": true
+    },
+    {
+      "file": "results/central_extended_1.jsonl",
+      "entries": 16,
+      "checkpointMatched": true
+    },
+    {
+      "file": "results/central_extended_2.jsonl",
+      "entries": 16,
+      "checkpointMatched": true
+    }
+  ],
+  "publicNetworkStatus": "confirmed_on_sepolia",
+  "note": "Offline audit of delivered evidence and recorded outcomes; live chain checks are performed by deployment/adapter scripts."
+}

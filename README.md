@@ -1,8 +1,8 @@
 # Multimodal Acquisition & ConsentChain
 
-NSCLC 术后多模态预后的成本感知采集研究（B1），与同意账本 / 可验证遗忘研究（A2）共用的代码仓库。两篇论文共享一个**区块链接口**：分析代码只调用 `Ledger`，本仓库提供本机哈希链实现，区块链后端**接口已留、尚未实现**。
+NSCLC 术后多模态预后的成本感知采集研究（B1），与同意账本 / 可验证遗忘研究（A2）共用的代码仓库。两篇论文共享 `Ledger` 接口：分析代码只调用 `Ledger`。B1 的 `ANALYSIS_RECORD` 已接入 EVM 模型证据合约并部署在 Ethereum Sepolia（合约 `0xF3A2732f7521ED01A0AeaB874F9b2E46aB6B0155`）；A2 的链后端仍未实现。
 
-> 私有仓库，未授权公开或再分发（All rights reserved）。不含任何数据、患者级特征或预测结果。
+> 私有仓库，未授权公开或再分发（All rights reserved）。不含任何数据、患者级特征、预测结果或钱包密钥。合并记录见 [MERGE_NOTES.md](MERGE_NOTES.md)。
 
 ## 目录
 
@@ -15,7 +15,9 @@ experiments/
   rna_transport/          H2：7 个 GEO 外部队列的 RNA 分支迁移（B1 引用）
   lung_missingness/       队列准备、预处理与 Cox 模型（B1 / H1 依赖）
 papers/
-  b1_jbhi/                B1 论文（IEEE JBHI 模板，9 页）、作图脚本、成本向量、Overleaf 打包
+  b1_jbhi/                B1 论文 v2（IEEE JBHI 模板，9 页）、作图脚本、成本向量、draw.io 源文件、Overleaf 打包
+  b1_jbhi/review/         v3 稿件评审
+  b1_jbhi_v3/             B1 论文 v3（含 Sepolia 链实验），单独存放
   a2_consentchain/        A2 论文骨架
 registry/datasets.yaml    公开数据集元数据（来源、license）
 docs/RESEARCH_INDEX.md    实验与论文的总索引
@@ -29,7 +31,8 @@ docs/RESEARCH_INDEX.md    实验与论文的总索引
 |---|---|---|
 | `experiments/chain_interface/ledger.py` → `Ledger` | `append / events / verify`，提交者授权与字段检查，`Receipt`（tx hash、区块号、状态、gas、延迟） | 接口已定 |
 | 同上 → `LocalHashChainLedger` | 本机哈希链日志，作为"中心化审计日志"对照 | 已实现 |
-| 同上 → `BlockchainLedger` | 许可链后端（Hyperledger Fabric / EVM） | **留空，待实现** |
+| 同上 → `BlockchainLedger` | B1 `ANALYSIS_RECORD` 的 EVM 后端（经 `evm/scripts/ledger_bridge.mjs`） | 已实现；A2 事件不在支持范围 |
+| `experiments/chain_interface/evm/` | Solidity 合约、30 项合约测试、本地基准、Sepolia 部署与审计脚本、结果 | 详见该目录 README |
 | `experiments/chain_interface/benchmark.py` | 固定测量窗口内的成功率、TPS、延迟 p50/p95、gas | 可用 |
 | `experiments/b1_cost_acquisition/anchor_results.py` | 把 B1 冻结结果写成 `ANALYSIS_RECORD`，审计方重算证据哈希核对 | 可用 |
 | `experiments/a2_consent_unlearning/` | 同意登记、撤回、分片遗忘与回执 | 骨架可用 |
@@ -70,5 +73,6 @@ python -X utf8 papers/b1_jbhi/make_figures.py
 ## 限制
 
 - 撤回同意是模拟的（公开队列患者无法真正撤回）；账本只能证明遗忘流程执行过。
-- 区块链层只做了本机功能测试，未做部署、gas、吞吐和防篡改评估。
+- B1 链实验已测本地 gas 与运行开销、检查授权与哈希一致性，并在 Sepolia 完成部署、两条登记和一次元数据修订；只有单一账户写入，多医院背书、共识安全和 A2 链事件未验证。
+- 链上证据哈希对应本仓库中 LF 换行的文件（见 `experiments/chain_interface/README.md`）。
 - 成本为文献情景值；RNA 湿实验碳排放缺少同行评审数据。

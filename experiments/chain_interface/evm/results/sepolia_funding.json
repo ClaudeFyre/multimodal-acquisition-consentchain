@@ -1,0 +1,16 @@
+{
+  "chainId": 11155111,
+  "txHash": "0xe3641cf5aab397559a7038deddf158f56af524e9929baa024bfd2295d6cc80ec",
+  "from": "0x53A02e3C8C034E758d759860686Ef1937BB8283E",
+  "to": "0x0f7d34D027D1D70B8bB283DD57F35710D52f99db",
+  "valueWei": "1000000000000000",
+  "valueSepoliaETH": "0.001",
+  "status": 1,
+  "blockNumber": 11967366,
+  "gasUsed": "204600",
+  "feeWei": "306900003478200",
+  "balanceWei": "1000000000000000",
+  "checkedAtUTC": "2026-10-22T05:09:52.056Z",
+  "fundingMethod": "user-confirmed transfer from existing Sepolia test wallet",
+  "explorerURL": "https://sepolia.etherscan.io/tx/0xe3641cf5aab397559a7038deddf158f56af524e9929baa024bfd2295d6cc80ec"
+}

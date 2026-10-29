@@ -1,0 +1,17 @@
+{
+  "hash": "0x7aa04173a3c037b7bf93aea8dd029fa478329dc137d023cb7a589b3293b61a05",
+  "to": null,
+  "from": "0x0f7d34D027D1D70B8bB283DD57F35710D52f99db",
+  "type": 2,
+  "nonce": 0,
+  "gasLimit": "3000000",
+  "maxFeePerGas": "1332",
+  "value": "0",
+  "status": 0,
+  "gasUsed": "3000000",
+  "gasPrice": "1316",
+  "contractAddress": "0xAAf03031F0C58546172b2dB4Eb46a4e3433BA3Bc",
+  "blockNumber": 11967375,
+  "latestBlockGasLimit": "200000000",
+  "newEstimate": "10066523"
+}

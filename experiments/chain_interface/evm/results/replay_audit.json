@@ -1,0 +1,11 @@
+{
+  "allPassed": true,
+  "readOnlyReplay": true,
+  "chainId": 31337,
+  "receiptChecks": 100,
+  "analysisEvents": 98,
+  "nativeRecords": 2,
+  "metadataRevisionPreserved": true,
+  "source": "results/anvil_state.json",
+  "snapshotWritten": false
+}

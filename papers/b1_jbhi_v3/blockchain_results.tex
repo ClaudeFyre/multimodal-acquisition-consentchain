@@ -1,0 +1,52 @@
+\subsection{Evidence Registration and Write Overhead}
+\label{sec:chain-results}
+Both B1 conclusions were registered and reconstructed with the original evidence commitment. All 30 contract tests and nine native-adapter checks passed, and all 128 altered commitment preimages were rejected. Replaying identical records reused the existing receipts. A description revision preserved the evidence, model-specification and analysis digests.
+
+Local deployment used 1,428,475 gas; registering the two B1 records used 682,909 and 682,825 gas, and revising one description used 61,528 gas. Longer display metadata increased registration gas in the synthetic workload (Table~\ref{tab:registry}). The signed log completed writes more quickly under the tested configuration. Modified entries were detected; truncation was detected when the verifier held a trusted head checkpoint.
+
+On Sepolia, deployment, both registrations and the description revision produced four successful receipts. Table~\ref{tab:sepolia} reports the gas, fees and timing of each operation. The registered evidence commitment matched the original files after the revision.
+
+\begin{table*}[t]
+\centering
+\caption{Local registry overhead: three repetitions of 16 writes per backend and payload class}
+\label{tab:registry}
+\setlength{\tabcolsep}{7pt}
+\begin{tabular}{@{}llrrr@{}}
+\toprule
+Backend & Display payload & Gas per registration & Receipt / append latency (ms) & Observed writes/s (range) \\
+\midrule
+Local EVM & compact & 476,930 & 982.34 & 4.21 (3.99--4.33) \\
+Local EVM & extended & 889,876 & 967.13 & 4.13 (4.04--4.24) \\
+Signed log & compact & -- & 3.98 & 249.29 (243.18--353.30) \\
+Signed log & extended & -- & 3.03 & 348.75 (299.98--359.10) \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.96\textwidth}\footnotesize
+Gas and latency are medians of the three within-repetition medians; write rates are medians with the repetition range in parentheses. Compact/extended payloads use 16/64 and 128/512 name/description bytes. The EVM used 1-s blocks and four outstanding writes; the log appended sequentially with signing and \texttt{fsync}. Rates describe these client configurations and completion endpoints.
+\end{minipage}
+\end{table*}
+
+\begin{table*}[t]
+\centering
+\caption{Gas, fees and timing of four successful Sepolia transactions on 22 October 2026 (UTC)}
+\label{tab:sepolia}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lrrrccr@{}}
+\toprule
+Operation & Block & Gas used & \shortstack{Fee ($10^{-9}$\\SepoliaETH)} & \shortstack{Submission\\start (UTC)} & \shortstack{Block time\\(UTC)} & \shortstack{Receipt\\latency (s)} \\
+\midrule
+Deployment & 11,967,396 & 9,986,101 & 13.141708916 & 05:14:56.284 & 05:15:12 & 19.59 \\
+Stage-inclusive record & 11,967,397 & 3,139,469 & 4.131541204 & 05:15:17.461 & 05:15:24 & 7.89 \\
+Stage-excluded record & 11,967,398 & 3,139,385 & 4.131430660 & 05:15:26.884 & 05:15:36 & 13.34 \\
+Metadata revision & 11,967,399 & 191,886 & 0.252521976 & 05:15:42.516 & 05:15:48 & 7.31 \\
+\midrule
+Total & -- & 16,456,841 & 21.657202756 & -- & -- & -- \\
+\bottomrule
+\end{tabular}
+\par\smallskip
+\begin{minipage}{0.98\textwidth}\footnotesize
+All receipts had status 1 on chain ID 11155111. Effective gas price was 1,316 wei/gas for all four transactions; fee equals gas used times this price. The total was $0.000000021657202756$ SepoliaETH. Submission start and receipt latency came from the client log; block time is the inclusion-block timestamp. Latency ended at observation of a one-confirmation receipt. Full hashes and unrounded values appear in the supplied transaction CSV. Contract: \href{https://sepolia.etherscan.io/address/0xF3A2732f7521ED01A0AeaB874F9b2E46aB6B0155}{\texttt{0xF3A2732f7521ED01A0AeaB874F9b2E46aB6B0155}}.
+\end{minipage}
+\end{table*}

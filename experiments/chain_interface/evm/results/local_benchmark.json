@@ -1,0 +1,467 @@
+{
+  "schema": "registry-local-experiment/v1",
+  "status": "passed",
+  "createdAtUTC": "2026-10-22T04:25:11.995Z",
+  "protocolSha256": "6a7b9710cb275178a3d2e759d8450e58419cd931171fe44d43c5ec8332052358",
+  "scope": {
+    "modelTrainingRepeated": false,
+    "reportedModelResultsSource": "original B1 results/results.json and six-file evidence bundle from the supplied project",
+    "syntheticLoadRecords": true,
+    "localConsensusSecurityEvaluated": false,
+    "sepoliaPerformanceMustBeMeasuredSeparately": true,
+    "confirmationIsFinality": false,
+    "b1LedgerEventType": "ANALYSIS_RECORD",
+    "a2ConsentUnlearningBackendImplemented": false,
+    "resultHashEncoding": "SHA-256 ABI encoding of sourceRecordId, conclusion, evidenceHash, evidenceURI, modelVersion, confidence",
+    "benchmarkEntryPoint": "anchorAnalysis(AnalysisInput)"
+  },
+  "environment": {
+    "platform": "darwin",
+    "release": "27.0.0",
+    "architecture": "arm64",
+    "cpu": "Apple M3",
+    "logicalCpus": 8,
+    "totalMemoryBytes": 17179869184,
+    "node": "v25.2.1",
+    "forge": "forge Version: 1.7.1-Homebrew\nCommit SHA: 4072e48705af9d93e3c0f6e29e93b5e9a40caed8\nBuild Timestamp: 2026-05-08T07:44:24.000000000Z (1778226264)\nBuild Profile: release",
+    "anvil": "anvil Version: 1.7.1-Homebrew\nCommit SHA: 4072e48705af9d93e3c0f6e29e93b5e9a40caed8\nBuild Timestamp: 2026-05-08T07:44:24.000000000Z (1778226264)\nBuild Profile: release",
+    "solc": "solc, the solidity compiler commandline interface\nVersion: 0.8.34+commit.80d5c536.Darwin.appleclang"
+  },
+  "chain": {
+    "chainId": 31337,
+    "blockTimeSeconds": 1,
+    "hardfork": "shanghai",
+    "concurrentSubmissions": 4,
+    "receiptPollingMilliseconds": 100
+  },
+  "deployment": {
+    "contractAddress": "0xDbD04E88232C5cE80fBf055e69Ab678CAB16c5a3",
+    "owner": "0x78D671CC61AE10DCbd15aee3C0e8e654251Ac929",
+    "txHash": "0x89d94e9e1fb6f3deca5227d22d7741c240d6422e29a0e7517ae3bf1779d74e6f",
+    "blockNumber": 1,
+    "gasUsed": "1428475",
+    "receiptLatencyMilliseconds": 967.936125
+  },
+  "functional": {
+    "anchorReceipts": [
+      {
+        "label": "B_stage_group",
+        "txHash": "0x06f908ba8b72d4e22a37f510e60f7886f5f34d6b75e64d5feeba4fb040dabc31",
+        "blockNumber": 2,
+        "gasUsed": "682909",
+        "gasPriceWei": "1886903959",
+        "feeWei": "1288583695736731",
+        "submissionMilliseconds": 8.981167000000141,
+        "receiptLatencyMilliseconds": 961.6568749999999,
+        "status": 1
+      },
+      {
+        "label": "A_no_stage",
+        "txHash": "0x5e66bba6e11c2c400c5fc63cb3524dad228d55a8170211cf1f789530985dda94",
+        "blockNumber": 3,
+        "gasUsed": "682825",
+        "gasPriceWei": "1781088254",
+        "feeWei": "1216171587037550",
+        "submissionMilliseconds": 12.310750000000098,
+        "receiptLatencyMilliseconds": 1071.2995,
+        "status": 1
+      }
+    ],
+    "metadataRevisionReceipt": {
+      "label": "metadata_revision",
+      "txHash": "0x4810d886b7796f9b50de140fa7f94a933c42de7db629bae9e63e0cb5c701caa3",
+      "blockNumber": 4,
+      "gasUsed": "61528",
+      "gasPriceWei": "1687896778",
+      "feeWei": "103852912956784",
+      "submissionMilliseconds": 10.242957999999817,
+      "receiptLatencyMilliseconds": 962.9967500000002,
+      "status": 1
+    },
+    "evidenceByteFlipTrials": 128,
+    "evidenceByteFlipsDetected": 128,
+    "metadataEvents": 2,
+    "immutableEvidenceAfterRename": true,
+    "sourceModelTrainingRepeated": false
+  },
+  "benchmarkRows": [
+    {
+      "backend": "local_evm",
+      "payloadClass": "compact",
+      "replicate": 0,
+      "n": 16,
+      "elapsedMilliseconds": 3691.2944580000003,
+      "observedWritesPerSecond": 4.334522802786382,
+      "latencyMilliseconds": {
+        "n": 16,
+        "median": 974.3713745000005,
+        "p95": 980.3215625,
+        "min": 758.802584,
+        "max": 980.6157499999999
+      },
+      "gasUsed": {
+        "n": 16,
+        "median": 476930,
+        "p95": 476942,
+        "min": 476918,
+        "max": 476942
+      }
+    },
+    {
+      "backend": "signed_fsynced_central_log",
+      "payloadClass": "compact",
+      "replicate": 0,
+      "n": 16,
+      "elapsedMilliseconds": 65.79500000000007,
+      "observedWritesPerSecond": 243.1795729158748,
+      "latencyMilliseconds": {
+        "n": 16,
+        "median": 3.9891670000006343,
+        "p95": 5.816114750000452,
+        "min": 2.3259999999991123,
+        "max": 5.923957999999402
+      },
+      "individualLatencyMilliseconds": [
+        5.780167000000802,
+        5.0162080000009155,
+        5.923957999999402,
+        3.0286249999990105,
+        3.960750000000189,
+        4.007417000000714,
+        3.9767920000012964,
+        4.009250000000975,
+        3.92566700000134,
+        4.0853340000012395,
+        3.965041999999812,
+        2.3259999999991123,
+        3.844208999998955,
+        3.8487919999988662,
+        4.001541999999972,
+        4.025042000001122
+      ],
+      "checkpointHash": "0xb9fc11f422d92ab466dda71d59139046ae6710645c7ac7f849fb59d2f14f6496",
+      "logFile": "results/central_compact_0.jsonl",
+      "checks": {
+        "intact": true,
+        "modifiedEntryRejected": true,
+        "truncatedLogAcceptedWithoutCheckpoint": true,
+        "truncatedLogRejectedWithCheckpoint": true
+      }
+    },
+    {
+      "backend": "signed_fsynced_central_log",
+      "payloadClass": "compact",
+      "replicate": 1,
+      "n": 16,
+      "elapsedMilliseconds": 45.28779199999917,
+      "observedWritesPerSecond": 353.2960935697703,
+      "latencyMilliseconds": {
+        "n": 16,
+        "median": 3.0080419999994774,
+        "p95": 3.3055102499993154,
+        "min": 1.6798339999986638,
+        "max": 3.548291999999492
+      },
+      "individualLatencyMilliseconds": [
+        3.2245829999992566,
+        1.6798339999986638,
+        1.7450840000001335,
+        3.548291999999492,
+        2.992000000000189,
+        2.9872080000004644,
+        3.031457999999475,
+        3.008916999999201,
+        3.007166999999754,
+        3.0375830000011774,
+        2.895249999999578,
+        1.8095830000002024,
+        3.1957910000000993,
+        3.0692920000001322,
+        2.9689999999991414,
+        3.0193749999998545
+      ],
+      "checkpointHash": "0xe6673565fceb14334ec53ce503fe6c8164105fe537a381e4c9e2f0c387f14328",
+      "logFile": "results/central_compact_1.jsonl",
+      "checks": {
+        "intact": true,
+        "modifiedEntryRejected": true,
+        "truncatedLogAcceptedWithoutCheckpoint": true,
+        "truncatedLogRejectedWithCheckpoint": true
+      }
+    },
+    {
+      "backend": "local_evm",
+      "payloadClass": "compact",
+      "replicate": 1,
+      "n": 16,
+      "elapsedMilliseconds": 3797.717417,
+      "observedWritesPerSecond": 4.213057013767805,
+      "latencyMilliseconds": {
+        "n": 16,
+        "median": 982.3354790000003,
+        "p95": 1075.7685309999997,
+        "min": 751.0267920000006,
+        "max": 1076.073625000001
+      },
+      "gasUsed": {
+        "n": 16,
+        "median": 476930,
+        "p95": 476942,
+        "min": 476906,
+        "max": 476942
+      }
+    },
+    {
+      "backend": "local_evm",
+      "payloadClass": "compact",
+      "replicate": 2,
+      "n": 16,
+      "elapsedMilliseconds": 4011.7607499999995,
+      "observedWritesPerSecond": 3.988273727440003,
+      "latencyMilliseconds": {
+        "n": 16,
+        "median": 985.6196039999995,
+        "p95": 1070.6035832499997,
+        "min": 967.7427499999994,
+        "max": 1070.831083000001
+      },
+      "gasUsed": {
+        "n": 16,
+        "median": 476930,
+        "p95": 476942,
+        "min": 476918,
+        "max": 476942
+      }
+    },
+    {
+      "backend": "signed_fsynced_central_log",
+      "payloadClass": "compact",
+      "replicate": 2,
+      "n": 16,
+      "elapsedMilliseconds": 64.18141600000126,
+      "observedWritesPerSecond": 249.2933468466898,
+      "latencyMilliseconds": {
+        "n": 16,
+        "median": 3.9755629999999655,
+        "p95": 5.45538525000029,
+        "min": 2.2962079999997513,
+        "max": 7.326042000000598
+      },
+      "individualLatencyMilliseconds": [
+        7.326042000000598,
+        4.831833000000188,
+        3.9743340000004537,
+        3.9929160000010597,
+        3.9239589999997406,
+        4.118791000000783,
+        3.9767919999994774,
+        3.981459000000541,
+        3.0120000000006257,
+        3.913166000000274,
+        4.063333000000057,
+        2.2962079999997513,
+        3.708042000000205,
+        3.913916000001336,
+        2.72637499999837,
+        4.349749999999403
+      ],
+      "checkpointHash": "0x3a6c4694b8dc8a4b8c208eb9eb8a1bd6c580918835909439c57eaed3696a27c3",
+      "logFile": "results/central_compact_2.jsonl",
+      "checks": {
+        "intact": true,
+        "modifiedEntryRejected": true,
+        "truncatedLogAcceptedWithoutCheckpoint": true,
+        "truncatedLogRejectedWithCheckpoint": true
+      }
+    },
+    {
+      "backend": "local_evm",
+      "payloadClass": "extended",
+      "replicate": 0,
+      "n": 16,
+      "elapsedMilliseconds": 3772.0730409999996,
+      "observedWritesPerSecond": 4.241699411991848,
+      "latencyMilliseconds": {
+        "n": 16,
+        "median": 967.1332709999988,
+        "p95": 975.9059687500012,
+        "min": 856.8970829999998,
+        "max": 975.9392499999994
+      },
+      "gasUsed": {
+        "n": 16,
+        "median": 889876,
+        "p95": 889888,
+        "min": 889852,
+        "max": 889888
+      }
+    },
+    {
+      "backend": "signed_fsynced_central_log",
+      "payloadClass": "extended",
+      "replicate": 0,
+      "n": 16,
+      "elapsedMilliseconds": 45.878333000000566,
+      "observedWritesPerSecond": 348.7485040051434,
+      "latencyMilliseconds": {
+        "n": 16,
+        "median": 3.0298540000003413,
+        "p95": 4.000791999999819,
+        "min": 1.6769999999996799,
+        "max": 4.947541000001365
+      },
+      "individualLatencyMilliseconds": [
+        4.947541000001365,
+        3.076375000000553,
+        2.179291000000376,
+        3.685208999999304,
+        2.9833330000001297,
+        3.2443329999987327,
+        2.7212080000026617,
+        3.080041999997775,
+        1.7428749999999127,
+        3.2517079999997804,
+        1.6769999999996799,
+        1.9369580000020505,
+        3.45929199999955,
+        2.8841250000004948,
+        1.8019580000000133,
+        3.177749999998923
+      ],
+      "checkpointHash": "0x6fe18a6912c40fefa84fd978c1019622339e2665db7222b067c628a8f9bb1e37",
+      "logFile": "results/central_extended_0.jsonl",
+      "checks": {
+        "intact": true,
+        "modifiedEntryRejected": true,
+        "truncatedLogAcceptedWithoutCheckpoint": true,
+        "truncatedLogRejectedWithCheckpoint": true
+      }
+    },
+    {
+      "backend": "signed_fsynced_central_log",
+      "payloadClass": "extended",
+      "replicate": 1,
+      "n": 16,
+      "elapsedMilliseconds": 44.55562500000087,
+      "observedWritesPerSecond": 359.1016846918809,
+      "latencyMilliseconds": {
+        "n": 16,
+        "median": 2.9911670000001322,
+        "p95": 3.7611764999992374,
+        "min": 1.6262500000011642,
+        "max": 4.000457999998616
+      },
+      "individualLatencyMilliseconds": [
+        2.4507080000003043,
+        1.7050420000014128,
+        1.9362920000021404,
+        3.4410419999985606,
+        4.000457999998616,
+        3.021832999998878,
+        2.978791999998066,
+        3.0377079999998386,
+        2.9653330000001006,
+        3.0035420000021986,
+        1.6262500000011642,
+        1.692709000002651,
+        3.6814159999994445,
+        3.0056669999976293,
+        3.1488750000025902,
+        2.8292920000021695
+      ],
+      "checkpointHash": "0x1639392217dc949c6a83c888a985131a45464e35360ba928896af0072b4898be",
+      "logFile": "results/central_extended_1.jsonl",
+      "checks": {
+        "intact": true,
+        "modifiedEntryRejected": true,
+        "truncatedLogAcceptedWithoutCheckpoint": true,
+        "truncatedLogRejectedWithCheckpoint": true
+      }
+    },
+    {
+      "backend": "local_evm",
+      "payloadClass": "extended",
+      "replicate": 1,
+      "n": 16,
+      "elapsedMilliseconds": 3876.0390420000003,
+      "observedWritesPerSecond": 4.127925396681285,
+      "latencyMilliseconds": {
+        "n": 16,
+        "median": 970.4268334999997,
+        "p95": 1077.9121455000004,
+        "min": 854.9837079999998,
+        "max": 1078.231832999998
+      },
+      "gasUsed": {
+        "n": 16,
+        "median": 889876,
+        "p95": 889888,
+        "min": 889852,
+        "max": 889888
+      }
+    },
+    {
+      "backend": "local_evm",
+      "payloadClass": "extended",
+      "replicate": 2,
+      "n": 16,
+      "elapsedMilliseconds": 3957.932582999998,
+      "observedWritesPerSecond": 4.042514536180519,
+      "latencyMilliseconds": {
+        "n": 16,
+        "median": 966.0096045000009,
+        "p95": 1065.1399164999975,
+        "min": 959.0043339999975,
+        "max": 1065.286666
+      },
+      "gasUsed": {
+        "n": 16,
+        "median": 889876,
+        "p95": 889888,
+        "min": 889852,
+        "max": 889888
+      }
+    },
+    {
+      "backend": "signed_fsynced_central_log",
+      "payloadClass": "extended",
+      "replicate": 2,
+      "n": 16,
+      "elapsedMilliseconds": 53.33729200000016,
+      "observedWritesPerSecond": 299.9777341526816,
+      "latencyMilliseconds": {
+        "n": 16,
+        "median": 3.4708544999994047,
+        "p95": 4.414448000000448,
+        "min": 1.8914160000022093,
+        "max": 5.32666700000118
+      },
+      "individualLatencyMilliseconds": [
+        5.32666700000118,
+        3.9504999999990105,
+        2.0672079999967536,
+        3.16608400000041,
+        2.0445829999989655,
+        3.7756249999983993,
+        4.020750000003318,
+        3.9718749999992724,
+        3.9443329999994603,
+        4.110375000000204,
+        2.066792000001442,
+        1.8914160000022093,
+        2.973666999998386,
+        3.0220420000005106,
+        3.9446660000030533,
+        3.0102499999993597
+      ],
+      "checkpointHash": "0x319d352752e21001de2827a8bb3d3682134b782944c7dbe16a84b1257ce0f7c7",
+      "logFile": "results/central_extended_2.jsonl",
+      "checks": {
+        "intact": true,
+        "modifiedEntryRejected": true,
+        "truncatedLogAcceptedWithoutCheckpoint": true,
+        "truncatedLogRejectedWithCheckpoint": true
+      }
+    }
+  ]
+}

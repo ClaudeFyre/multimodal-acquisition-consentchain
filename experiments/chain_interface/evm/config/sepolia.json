@@ -1,0 +1,12 @@
+{
+  "chainId": 11155111,
+  "rpcUrl": "https://ethereum-sepolia-rpc.publicnode.com",
+  "explorerBase": "https://sepolia.etherscan.io",
+  "receiptConfirmations": 1,
+  "maximumFeePerGasGwei": "3",
+  "maximumExperimentGas": 40000000,
+  "maximumTransactionGas": 16000000,
+  "maximumExperimentFeeWei": "100000000000000",
+  "gasEstimateMarginPercent": 20,
+  "reserveWei": "100000000000000"
+}
