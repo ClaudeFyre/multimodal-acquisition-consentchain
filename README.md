@@ -2,7 +2,7 @@
 
 NSCLC 术后多模态预后的成本感知采集研究（B1），与同意账本 / 可验证遗忘研究（A2）共用的代码仓库。两篇论文共享 `Ledger` 接口：分析代码只调用 `Ledger`。B1 的 `ANALYSIS_RECORD` 已接入 EVM 模型证据合约并部署在 Ethereum Sepolia（合约 `0xF3A2732f7521ED01A0AeaB874F9b2E46aB6B0155`）；A2 的链后端仍未实现。
 
-> 私有仓库，未授权公开或再分发（All rights reserved）。不含任何数据、患者级特征、预测结果或钱包密钥。合并记录见 [MERGE_NOTES.md](MERGE_NOTES.md)。
+> 公开仓库，供论文审稿与复核使用。未附开源许可证，保留所有权利（All rights reserved）。不含任何数据、患者级特征、预测结果或钱包密钥。合并记录见 [MERGE_NOTES.md](MERGE_NOTES.md)。
 
 ## 目录
 
