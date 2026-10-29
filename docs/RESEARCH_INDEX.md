@@ -6,9 +6,13 @@
 
 ## 2026-10-27 新增：TBME 数字孪生专题可行性
 
-2026-10-28 补充：固定五例完整原始裁剪 DCE、SER 与掩膜已取得并打包，依据官方对象内嵌编码复算 FTV_PE，保留边界/阈值歧义。可交影像专科审阅，意见仍为空白；实际给药记录未取得。最终确认尚未冻结、预留未评分。见 [交接状态](../papers/tbme_digital_twin/DATA_COMPLETION_STATUS_2026-10-28.md)。
+2026-10-29 共同作者讨论稿：新增 [9页IEEE双栏预期投稿PDF](../papers/tbme_digital_twin/submission_discussion_2026-10-29/TBME_expected_submission_discussion_2026-10-29.pdf) 与 [完整讨论包](../papers/tbme_digital_twin/TBME_coauthor_discussion_package_2026-10-29.zip)，含可编辑Word、5图5表及医生/计算研究者合作说明。独立虚拟示例红字，拟议和未核实内容高亮；真实研究稿与冻结实验未替换，148人预留仍未评分。
 
-独立于下方 B1/A2，新增 `papers/tbme_digital_twin/` 和 `experiments/tbme_twin_feasibility/`。692 人纵向队列中，544 人完成中心分组基线、不确定性 v1 与追加分位数对照 v2；两个中心 148 人预留未评分。原候选评分等价于已有预测剖面投影，不作为新算法。总体覆盖掩盖的体积条件问题可被既有分位数模型改善，目前没有新算法或机制孪生证据。像素掩膜核对和独立确认未完成，稿件不可直接投稿。详情见 [最新对照报告](../papers/tbme_digital_twin/QUANTILE_COMPARATOR_REPORT_2026-10-27.md) 与 [数据执行清单](../papers/tbme_digital_twin/DATA_AND_EXECUTION_PLAN_2026-10-27.md)。下方旧索引保留原两篇论文的范围与状态。
+2026-10-29 后续：[首轮内部审稿](../papers/tbme_digital_twin/INTERNAL_REVIEW_2026-10-29.md)及正文修订已完成，当前为 [审稿修订版](../papers/tbme_digital_twin/manuscript_internal_review_v1_2026-10-29.md)。补到REV02/04基线完整裁剪DCE，统一五例临床审阅材料并形成未签署裁定稿。尚无新增最终专家意见，临床裁定、确认方案冻结和148人预留评估仍待完成；下段T0 DCE缺口为此前阶段状态。
+
+2026-10-29 补充：已接收 R1/R2 预审及最新 R2 v2，完成固定五例源 FTV_PE 计数核对、开发集测量边界/逐中心/病例影响实验，重写 [英文全文](../papers/tbme_digital_twin/manuscript_draft_2026-10-29.md)。新增 [实验报告](../papers/tbme_digital_twin/EXPERIMENT_REPORT_2026-10-29.md)、[补充表](../papers/tbme_digital_twin/SUPPLEMENTARY_METHODS_RESULTS_2026-10-29.md) 和一次集中临床审阅清单。REV02/04 已补 T0 SER/掩膜，T0 DCE、解剖对应和最终医学裁定尚缺；实际给药仍缺。最终确认未冻结，148 人预留未评分。
+
+独立于下方 B1/A2，新增 `papers/tbme_digital_twin/` 和 `experiments/tbme_twin_feasibility/`。692 人纵向队列中，544 人完成中心分组基线、不确定性 v1、分位数对照 v2 与测量稳健性 v3；三次校准划分重复使用同一队列。原候选评分等价于已有预测剖面投影，不作为新算法。既有分位数模型改善部分体积条件覆盖，但源零值覆盖较弱，没有统一优胜或机制孪生证据。五例源掩膜计数已复现，不等于解剖病灶金标准；独立确认仍未完成，稿件不可直接投稿。下方旧索引保留原两篇论文的范围与状态。
 
 更新于 2026-10-18。只覆盖肺癌预后主线和 B1 / A2 两篇论文；数据湖本身见根目录 `README.md`，其他研究路线见 `RESEARCH_ROUTES_2026-10-15.md`。
 
